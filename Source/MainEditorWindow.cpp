@@ -64,14 +64,14 @@ MainEditorWindow::MainEditorWindow (AlkamistMIDIHumanizerAudioProcessor& inputPr
 
 
     //[Constructor] You can add your own custom stuff here..
-    
+
     timingStandardDeviationSlider->setVelocityModeParameters(0.45, 1, 0.05, true);
     timingStandardDeviationSlider->setDoubleClickReturnValue(true, 0.0);
 
     updateAllSliderValues();
 
     startTimerHz(60);
-    
+
     //[/Constructor]
 }
 

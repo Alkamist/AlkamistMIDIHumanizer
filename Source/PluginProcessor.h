@@ -1,6 +1,9 @@
 #ifndef PLUGINPROCESSOR_H_INCLUDED
 #define PLUGINPROCESSOR_H_INCLUDED
 
+#include <boost/random.hpp>
+#include <boost/random/normal_distribution.hpp>
+
 #include "../JuceLibraryCode/JuceHeader.h"
 
 class FloatParameter;
@@ -63,9 +66,30 @@ public:
 
 private:
 
+    double generateNormalRandomNumber();
+
+    struct TaggedMIDIMessage
+    {
+        MidiMessage MIDIMessage;
+        double samplePosition;
+        bool slotIsUsed;
+    };
+
     void handleParameterChanges();
     void clearParameterChanges();
     bool mParameterChangeFlag;
+
+    double mTimingStandardDeviationInSamples;
+    double mMaximumDelayTimeInSamples;
+
+    double mMIDISampleOffsetBuffer[128];
+
+    const static int taggedMIDIBufferSize = 1024;
+
+    TaggedMIDIMessage taggedMIDIBuffer[taggedMIDIBufferSize];
+    MidiBuffer humanizedMIDIBuffer;
+
+    boost::mt19937 mMersenneTwisterGenerator;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AlkamistMIDIHumanizerAudioProcessor)

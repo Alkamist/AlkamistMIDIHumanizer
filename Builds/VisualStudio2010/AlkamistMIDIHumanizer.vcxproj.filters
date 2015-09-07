@@ -322,6 +322,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\MIDIProcessor.cpp">
+      <Filter>AlkamistMIDIHumanizer\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\MainEditorWindow.cpp">
       <Filter>AlkamistMIDIHumanizer\Source</Filter>
     </ClCompile>
@@ -1593,6 +1596,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\MIDIProcessor.h">
+      <Filter>AlkamistMIDIHumanizer\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\MainEditorWindow.h">
       <Filter>AlkamistMIDIHumanizer\Source</Filter>
     </ClInclude>

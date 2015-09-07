@@ -13,6 +13,9 @@
               jucerVersion="3.2.0" companyName="Alkamist Audio">
   <MAINGROUP id="UDrkAm" name="AlkamistMIDIHumanizer">
     <GROUP id="{46759811-F376-B7F2-3A1C-5B0B989CDAAF}" name="Source">
+      <FILE id="b6CZek" name="MIDIProcessor.cpp" compile="1" resource="0"
+            file="Source/MIDIProcessor.cpp"/>
+      <FILE id="De1aH3" name="MIDIProcessor.h" compile="0" resource="0" file="Source/MIDIProcessor.h"/>
       <FILE id="pNoYDh" name="MainEditorWindow.cpp" compile="1" resource="0"
             file="Source/MainEditorWindow.cpp"/>
       <FILE id="iACNTo" name="MainEditorWindow.h" compile="0" resource="0"
@@ -35,13 +38,16 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2010 targetFolder="Builds/VisualStudio2010" vstFolder="c:\SDKs\vstsdk2.4">
+    <VS2010 targetFolder="Builds/VisualStudio2010" vstFolder="c:\SDKs\vstsdk2.4"
+            externalLibraries="" extraDefs="_SCL_SECURE_NO_WARNINGS">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="AlkamistMIDIHumanizer"
-                       postbuildCommand="copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst&quot;&#10;copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;C:\VSTPluginsDebug\$(TargetFileName)&quot;"/>
+                       postbuildCommand="copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst&quot;&#10;copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;C:\VSTPluginsDebug\$(TargetFileName)&quot;"
+                       libraryPath="" headerPath="F:\Programming Documents\boost_1_59_0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="AlkamistMIDIHumanizer"/>
+                       isDebug="0" optimisation="3" targetName="AlkamistMIDIHumanizer"
+                       libraryPath="" headerPath="F:\Programming Documents\boost_1_59_0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../Programming Documents/JUCE-master/modules"/>
