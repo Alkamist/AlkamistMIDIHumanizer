@@ -322,7 +322,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\MIDIProcessor.cpp">
+    <ClCompile Include="..\..\Source\UnboundMIDIBuffer.cpp">
+      <Filter>AlkamistMIDIHumanizer\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MIDIHumanizer.cpp">
       <Filter>AlkamistMIDIHumanizer\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\MainEditorWindow.cpp">
@@ -1596,7 +1599,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\MIDIProcessor.h">
+    <ClInclude Include="..\..\Source\UnboundMIDIBuffer.h">
+      <Filter>AlkamistMIDIHumanizer\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MIDIHumanizer.h">
       <Filter>AlkamistMIDIHumanizer\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\MainEditorWindow.h">
