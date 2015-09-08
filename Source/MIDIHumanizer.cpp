@@ -52,6 +52,8 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer &inputMIDIBuffer)
 
     if (! mUnboundMIDIBuffer.isEmpty())
     {
+        //mUnboundMIDIBuffer.fixNoteOverlaps();
+
         for (int index = 0; index < mUnboundMIDIBuffer.getSize(); ++index)
         {
             if (mUnboundMIDIBuffer[index].samplePosition < mBlockSize)

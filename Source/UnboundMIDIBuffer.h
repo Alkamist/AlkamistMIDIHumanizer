@@ -16,6 +16,7 @@ public:
     void addMessage (MidiMessage inputMIDIMessage, int inputSamplePosition);
     void eraseMessage (int messageNumber);
     void clear();
+    void fixNoteOverlaps();
     
     inline bool isEmpty() { return mInternalMIDIBuffer.empty(); };
     inline int getSize() { return (unsigned int) mInternalMIDIBuffer.size(); };

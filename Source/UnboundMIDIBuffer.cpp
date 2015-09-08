@@ -22,6 +22,16 @@ void UnboundMIDIBuffer::clear()
     mInternalMIDIBuffer.clear();
 }
 
+void UnboundMIDIBuffer::fixNoteOverlaps()
+{
+    int noteOnsInARow = 0;
+
+    for (int index = 0; index < mInternalMIDIBuffer.size(); ++index)
+    {
+
+    }
+}
+
 TaggedMIDIMessage& UnboundMIDIBuffer::operator[] (int index) 
 { 
     return mInternalMIDIBuffer[index]; 
