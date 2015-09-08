@@ -13,6 +13,10 @@
               jucerVersion="3.2.0" companyName="Alkamist Audio">
   <MAINGROUP id="UDrkAm" name="AlkamistMIDIHumanizer">
     <GROUP id="{46759811-F376-B7F2-3A1C-5B0B989CDAAF}" name="Source">
+      <FILE id="V9e0ZO" name="TaggedMIDIMessage.cpp" compile="1" resource="0"
+            file="Source/TaggedMIDIMessage.cpp"/>
+      <FILE id="wZWRaP" name="TaggedMIDIMessage.h" compile="0" resource="0"
+            file="Source/TaggedMIDIMessage.h"/>
       <FILE id="TULixe" name="UnboundMIDIBuffer.cpp" compile="1" resource="0"
             file="Source/UnboundMIDIBuffer.cpp"/>
       <FILE id="Ydbp2R" name="UnboundMIDIBuffer.h" compile="0" resource="0"

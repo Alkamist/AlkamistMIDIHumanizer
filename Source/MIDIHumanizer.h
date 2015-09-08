@@ -14,9 +14,15 @@ public:
     MIDIHumanizer();
     ~MIDIHumanizer();
 
-    void processMIDIBuffer (MidiBuffer &inputMIDIBuffer, int blockSize);
+    void processMIDIBuffer (MidiBuffer &inputMIDIBuffer);
+    inline void reset (int inputBlockSize) { mBlockSize = inputBlockSize; };
 
 private:
+
+    static const int MAX_NUMBER_OF_KEYS = 128;
+    double sampleOffsetBuffer[MAX_NUMBER_OF_KEYS];
+
+    int mBlockSize;
 
     UnboundMIDIBuffer mUnboundMIDIBuffer;
     MidiBuffer mHumanizedMIDIBuffer;

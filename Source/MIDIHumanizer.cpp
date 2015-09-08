@@ -4,13 +4,13 @@
 
 MIDIHumanizer::MIDIHumanizer()
 {
-    mMersenneTwisterRNG.seed (std::time (0));
+    mMersenneTwisterRNG.seed ((unsigned int) std::time (0));
 }
 
 MIDIHumanizer::~MIDIHumanizer()
 {}
 
-void MIDIHumanizer::processMIDIBuffer (MidiBuffer &inputMIDIBuffer, int blockSize)
+void MIDIHumanizer::processMIDIBuffer (MidiBuffer &inputMIDIBuffer)
 {
     MidiBuffer::Iterator inputMIDIBufferIterator (inputMIDIBuffer);
 
@@ -22,7 +22,7 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer &inputMIDIBuffer, int blockSiz
         inputMIDIBufferIterator.getNextEvent (currentMidiMessage, midiMessageSamplePosition);
         bool midiBufferIsNotEmpty = true;
 
-        for (int sampleIndex = 0; sampleIndex < blockSize; ++sampleIndex)
+        for (int sampleIndex = 0; sampleIndex < mBlockSize; ++sampleIndex)
         {
             // Go through every MIDI message this sample.
             while (sampleIndex == midiMessageSamplePosition
@@ -30,9 +30,17 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer &inputMIDIBuffer, int blockSiz
             {
                 if (currentMidiMessage.isNoteOn() || currentMidiMessage.isNoteOff())
                 {
-                    int newSamplePosition = generateNormalRandomNumber() * mTimingStandardDeviationInSamples 
+                    /*int newSamplePosition = generateNormalRandomNumber() * mTimingStandardDeviationInSamples 
                                           + midiMessageSamplePosition 
-                                          + mMaximumDelayTimeInSamples;
+                                          + mMaximumDelayTimeInSamples;*/
+                    if (currentMidiMessage.isNoteOn())
+                    {
+                        sampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = generateNormalRandomNumber() * 200;
+                    }
+
+                    int newSamplePosition = midiMessageSamplePosition
+                                          + sampleOffsetBuffer[currentMidiMessage.getNoteNumber()]
+                                          + 5000;
 
                     mUnboundMIDIBuffer.addMessage (currentMidiMessage, newSamplePosition);
                 }
@@ -44,6 +52,23 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer &inputMIDIBuffer, int blockSiz
 
     if (! mUnboundMIDIBuffer.isEmpty())
     {
+        for (int index = 0; index < mUnboundMIDIBuffer.getSize(); ++index)
+        {
+            if (mUnboundMIDIBuffer[index].samplePosition < mBlockSize)
+            {
+                mHumanizedMIDIBuffer.addEvent (mUnboundMIDIBuffer[index].message,
+                                               mUnboundMIDIBuffer[index].samplePosition);
+
+                mUnboundMIDIBuffer.eraseMessage (index);
+            }
+            else
+            {
+                mUnboundMIDIBuffer[index].samplePosition -= mBlockSize;
+            }
+        }
+
+        inputMIDIBuffer.swapWith (mHumanizedMIDIBuffer);
+        mHumanizedMIDIBuffer.clear();
     }
 }
 
@@ -55,36 +80,3 @@ double MIDIHumanizer::generateNormalRandomNumber()
 
     return (double) normalDistribution (mMersenneTwisterRNG);
 }
-
-/*
-taggedMIDIBuffer[index].samplePosition = mMIDISampleOffsetBuffer[currentMidiMessage.getNoteNumber()]
-                                                                   + midiMessageSamplePosition
-                                                                   + mMaximumDelayTimeInSamples;
-if (currentMidiMessage.isNoteOn())
-{
-    mMIDISampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = generateNormalRandomNumber() * mTimingStandardDeviationInSamples;
-}
-
-for (int index = 0; index < taggedMIDIBufferSize; ++index)
-    {
-        if (taggedMIDIBuffer[index].samplePosition < getBlockSize()
-            && taggedMIDIBuffer[index].slotIsUsed)
-        {
-            humanizedMIDIBuffer.addEvent (taggedMIDIBuffer[index].MIDIMessage, 
-                                          taggedMIDIBuffer[index].samplePosition);
-                                          
-            taggedMIDIBuffer[index].MIDIMessage = defaultMIDIMessage;
-            taggedMIDIBuffer[index].samplePosition = 0;
-            taggedMIDIBuffer[index].slotIsUsed = false;
-        }
-        
-        if (taggedMIDIBuffer[index].samplePosition > getBlockSize()
-            && taggedMIDIBuffer[index].slotIsUsed)
-        {
-            taggedMIDIBuffer[index].samplePosition -= getBlockSize();
-        }
-    }
-
-    midiMessages.swapWith (humanizedMIDIBuffer);
-    humanizedMIDIBuffer.clear();
-*/

@@ -322,6 +322,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\TaggedMIDIMessage.cpp">
+      <Filter>AlkamistMIDIHumanizer\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UnboundMIDIBuffer.cpp">
       <Filter>AlkamistMIDIHumanizer\Source</Filter>
     </ClCompile>
@@ -1599,6 +1602,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\TaggedMIDIMessage.h">
+      <Filter>AlkamistMIDIHumanizer\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UnboundMIDIBuffer.h">
       <Filter>AlkamistMIDIHumanizer\Source</Filter>
     </ClInclude>

@@ -85,7 +85,9 @@ void AlkamistMIDIHumanizerAudioProcessor::releaseResources()
 
 void AlkamistMIDIHumanizerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-    setLatencySamples (mMaximumDelayTimeInSamples);
+    //setLatencySamples (mMaximumDelayTimeInSamples);
+
+    mMIDIHumanizer.processMIDIBuffer (midiMessages);
 
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
@@ -165,6 +167,8 @@ void AlkamistMIDIHumanizerAudioProcessor::reset()
 {
     double sampleRate = getSampleRate();
     int samplesPerBlock = getBlockSize();
+
+    mMIDIHumanizer.reset (samplesPerBlock);
 
     // Parameters
     timingStandardDeviation->reset (sampleRate, samplesPerBlock);
