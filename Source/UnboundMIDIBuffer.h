@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "TaggedMIDIMessage.h"
+#include "CompleteMIDINote.h"
 
 class UnboundMIDIBuffer
 {
@@ -13,17 +13,21 @@ public:
     UnboundMIDIBuffer();
     ~UnboundMIDIBuffer();
 
-    void addMessage (MidiMessage inputMIDIMessage, int inputSamplePosition);
-    void eraseMessage (int messageNumber);
+    void addNoteOn (const TaggedMIDIMessage& inputMessage);
+    void addNoteOff (const TaggedMIDIMessage& inputMessage);
+    void addCompleteMessage (const CompleteMIDINote& inputMessage);
+    void removeCompleteMessage (int messageNumber);
     void clear();
-    void fixNoteOverlaps();
+    //void fixNoteOverlaps();
     
-    inline bool isEmpty() { return mInternalMIDIBuffer.empty(); };
-    inline int getSize() { return (unsigned int) mInternalMIDIBuffer.size(); };
+    inline bool isEmpty() { return mInternalNoteBuffer.empty(); };
+    inline int getSize() { return (unsigned int) mInternalNoteBuffer.size(); };
 
-    std::vector<TaggedMIDIMessage> mInternalMIDIBuffer;
+    std::vector<CompleteMIDINote> mInternalNoteBuffer;
 
-    TaggedMIDIMessage& operator[] (int index);
+    CompleteMIDINote& operator[] (int index);
+
+private:
 
 };
 

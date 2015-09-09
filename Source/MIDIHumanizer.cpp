@@ -10,7 +10,7 @@ MIDIHumanizer::MIDIHumanizer()
 MIDIHumanizer::~MIDIHumanizer()
 {}
 
-void MIDIHumanizer::processMIDIBuffer (MidiBuffer &inputMIDIBuffer)
+void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
 {
     MidiBuffer::Iterator inputMIDIBufferIterator (inputMIDIBuffer);
 
@@ -26,23 +26,34 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer &inputMIDIBuffer)
         {
             // Go through every MIDI message this sample.
             while (sampleIndex == midiMessageSamplePosition
-                   && midiBufferIsNotEmpty)
+                && midiBufferIsNotEmpty)
             {
-                if (currentMidiMessage.isNoteOn() || currentMidiMessage.isNoteOff())
+                if (currentMidiMessage.isNoteOn())
+                {                 
+                    TaggedMIDIMessage test (currentMidiMessage,
+                                            midiMessageSamplePosition,
+                                            false);
+
+                    mUnboundMIDIBuffer.addNoteOn (test);
+
+                    /*double randomOffset = generateNormalRandomNumber() * 200.0;
+                    double newSampleOffset = randomOffset
+                                           + 5000.0;                  
+                    mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = newSampleOffset;
+
+                    MIDIMessageWithLocation noteOnMessage (currentMidiMessage, 
+                                                           midiMessageSamplePosition 
+                                                         + mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()]);
+                    mUnboundMIDIBuffer.addNoteOn (noteOnMessage);*/
+                }
+
+                if (currentMidiMessage.isNoteOff())
                 {
-                    /*int newSamplePosition = generateNormalRandomNumber() * mTimingStandardDeviationInSamples 
-                                          + midiMessageSamplePosition 
-                                          + mMaximumDelayTimeInSamples;*/
-                    if (currentMidiMessage.isNoteOn())
-                    {
-                        sampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = generateNormalRandomNumber() * 200;
-                    }
+                    TaggedMIDIMessage test (currentMidiMessage,
+                                            midiMessageSamplePosition,
+                                            false);
 
-                    int newSamplePosition = midiMessageSamplePosition
-                                          + sampleOffsetBuffer[currentMidiMessage.getNoteNumber()]
-                                          + 5000;
-
-                    mUnboundMIDIBuffer.addMessage (currentMidiMessage, newSamplePosition);
+                    mUnboundMIDIBuffer.addNoteOff (test);
                 }
 
                 midiBufferIsNotEmpty = inputMIDIBufferIterator.getNextEvent (currentMidiMessage, midiMessageSamplePosition);
@@ -56,17 +67,22 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer &inputMIDIBuffer)
 
         for (int index = 0; index < mUnboundMIDIBuffer.getSize(); ++index)
         {
-            if (mUnboundMIDIBuffer[index].samplePosition < mBlockSize)
-            {
-                mHumanizedMIDIBuffer.addEvent (mUnboundMIDIBuffer[index].message,
-                                               mUnboundMIDIBuffer[index].samplePosition);
+            pushMessageFromBuffer (mUnboundMIDIBuffer[index].noteOn);
+            pushMessageFromBuffer (mUnboundMIDIBuffer[index].noteOff);
 
-                mUnboundMIDIBuffer.eraseMessage (index);
-            }
-            else
+            
+            if (
+           (     (mUnboundMIDIBuffer[index].noteOn.samplePosition < 0)
+             && ! mUnboundMIDIBuffer[index].noteOn.isPlaceholder     )
+                &&
+           (     (mUnboundMIDIBuffer[index].noteOff.samplePosition < 0)
+             && ! mUnboundMIDIBuffer[index].noteOff.isPlaceholder     )
+               )
             {
-                mUnboundMIDIBuffer[index].samplePosition -= mBlockSize;
+                mUnboundMIDIBuffer.removeCompleteMessage (index);
+                --index;
             }
+            
         }
 
         inputMIDIBuffer.swapWith (mHumanizedMIDIBuffer);
@@ -81,4 +97,24 @@ double MIDIHumanizer::generateNormalRandomNumber()
     boost::normal_distribution<> normalDistribution (0.0, 1.0);
 
     return (double) normalDistribution (mMersenneTwisterRNG);
+}
+
+void MIDIHumanizer::pushMessageFromBuffer (TaggedMIDIMessage& inputMessage)
+{
+    if (! inputMessage.isPlaceholder)
+    {
+        if ((inputMessage.samplePosition < mBlockSize)
+         && (inputMessage.samplePosition >= 0))
+        {
+            mHumanizedMIDIBuffer.addEvent (inputMessage.message,
+                                           inputMessage.samplePosition);
+
+            inputMessage.samplePosition = -1;
+        }
+
+        if (inputMessage.samplePosition >= mBlockSize)
+        {
+            inputMessage.samplePosition -= mBlockSize;
+        }
+    }
 }
