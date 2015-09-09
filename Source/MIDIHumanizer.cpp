@@ -55,6 +55,13 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
 
                     mUnboundMIDIBuffer.addNoteOff (test);
                 }
+                
+                if ((! currentMidiMessage.isNoteOn())
+                 && (! currentMidiMessage.isNoteOff()))
+                {
+                    mOtherMIDIEvents.addEvent (currentMidiMessage, 
+                                               midiMessageSamplePosition);
+                }
 
                 midiBufferIsNotEmpty = inputMIDIBufferIterator.getNextEvent (currentMidiMessage, midiMessageSamplePosition);
             }
@@ -69,7 +76,6 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
         {
             pushMessageFromBuffer (mUnboundMIDIBuffer[index].noteOn);
             pushMessageFromBuffer (mUnboundMIDIBuffer[index].noteOff);
-
             
             if (
            (     (mUnboundMIDIBuffer[index].noteOn.samplePosition < 0)
@@ -81,13 +87,23 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
             {
                 mUnboundMIDIBuffer.removeCompleteMessage (index);
                 --index;
-            }
-            
+            }         
+        }
+        
+        MidiBuffer::Iterator otherEventsIterator (mOtherMIDIEvents);
+        MidiMessage currentOtherEvent;
+        int otherEventsSamplePosition = 0;
+
+        while (otherEventsIterator.getNextEvent (currentOtherEvent, otherEventsSamplePosition))
+        {
+            mHumanizedMIDIBuffer.addEvent (currentOtherEvent, otherEventsSamplePosition);
         }
 
         inputMIDIBuffer.swapWith (mHumanizedMIDIBuffer);
         mHumanizedMIDIBuffer.clear();
     }
+
+    mOtherMIDIEvents.clear();
 }
 
 // Generates a normally distributed random number with a

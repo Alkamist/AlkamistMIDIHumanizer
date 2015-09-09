@@ -27,6 +27,7 @@ private:
 
     UnboundMIDIBuffer mUnboundMIDIBuffer;
     MidiBuffer mHumanizedMIDIBuffer;
+    MidiBuffer mOtherMIDIEvents;
 
     boost::mt19937 mMersenneTwisterRNG;
     double generateNormalRandomNumber();
