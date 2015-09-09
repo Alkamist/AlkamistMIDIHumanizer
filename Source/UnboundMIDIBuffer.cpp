@@ -44,15 +44,40 @@ void UnboundMIDIBuffer::clear()
     mInternalNoteBuffer.clear();
 }
 
-/*void UnboundMIDIBuffer::fixNoteOverlaps()
+void UnboundMIDIBuffer::fixNoteOverlaps()
 {
-    int noteOnsInARow = 0;
-
-    for (int index = 0; index < mInternalNoteBuffer.size(); ++index)
+    for (int iii = 0; iii < mInternalNoteBuffer.size(); ++iii)
     {
+        CompleteMIDINote& currentNote = mInternalNoteBuffer[iii];
 
+        if (! currentNote.noteOff.isPlaceholder)
+        {
+            for (int jjj = 0; jjj < mInternalNoteBuffer.size(); ++jjj)
+            {
+                if (iii != jjj)
+                {
+                    const CompleteMIDINote& checkingNote = mInternalNoteBuffer[jjj];
+                    const int& currentNoteNumber = currentNote.noteOn.message.getNoteNumber();
+                    const int& checkingNoteNumber = checkingNote.noteOn.message.getNoteNumber();
+
+                    if (currentNoteNumber == checkingNoteNumber)
+                    {
+                        if (currentNote.noteOn.samplePosition < checkingNote.noteOn.samplePosition)
+                        {     
+                            if (! checkingNote.noteOff.isPlaceholder)
+                            {
+                                if (currentNote.noteOff.samplePosition > checkingNote.noteOn.samplePosition)
+                                {
+                                    currentNote.noteOff.samplePosition = checkingNote.noteOn.samplePosition - 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-}*/
+}
 
 CompleteMIDINote& UnboundMIDIBuffer::operator[] (int index) 
 { 

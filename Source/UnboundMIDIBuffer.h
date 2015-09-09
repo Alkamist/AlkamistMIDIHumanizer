@@ -18,7 +18,7 @@ public:
     void addCompleteMessage (const CompleteMIDINote& inputMessage);
     void removeCompleteMessage (int messageNumber);
     void clear();
-    //void fixNoteOverlaps();
+    void fixNoteOverlaps();
     
     inline bool isEmpty() { return mInternalNoteBuffer.empty(); };
     inline int getSize() { return (unsigned int) mInternalNoteBuffer.size(); };
