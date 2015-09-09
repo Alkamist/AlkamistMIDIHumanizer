@@ -30,30 +30,26 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
             {
                 if (currentMidiMessage.isNoteOn())
                 {                 
-                    TaggedMIDIMessage test (currentMidiMessage,
-                                            midiMessageSamplePosition,
-                                            false);
-
-                    mUnboundMIDIBuffer.addNoteOn (test);
-
-                    /*double randomOffset = generateNormalRandomNumber() * 200.0;
+                    double randomOffset = generateNormalRandomNumber() * 200.0;
                     double newSampleOffset = randomOffset
                                            + 5000.0;                  
                     mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = newSampleOffset;
 
-                    MIDIMessageWithLocation noteOnMessage (currentMidiMessage, 
-                                                           midiMessageSamplePosition 
-                                                         + mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()]);
-                    mUnboundMIDIBuffer.addNoteOn (noteOnMessage);*/
+                    TaggedMIDIMessage noteOnMessage (currentMidiMessage, 
+                                                     midiMessageSamplePosition 
+                                                   + mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()],
+                                                     false);
+                    mUnboundMIDIBuffer.addNoteOn (noteOnMessage);
                 }
 
                 if (currentMidiMessage.isNoteOff())
                 {
-                    TaggedMIDIMessage test (currentMidiMessage,
-                                            midiMessageSamplePosition,
-                                            false);
+                    TaggedMIDIMessage noteOffMessage (currentMidiMessage, 
+                                                      midiMessageSamplePosition 
+                                                    + mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()],
+                                                      false);
 
-                    mUnboundMIDIBuffer.addNoteOff (test);
+                    mUnboundMIDIBuffer.addNoteOff (noteOffMessage);
                 }
                 
                 if ((! currentMidiMessage.isNoteOn())
