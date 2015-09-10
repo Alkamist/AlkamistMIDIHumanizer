@@ -4,6 +4,7 @@
 #include <boost/random.hpp>
 #include <boost/random/normal_distribution.hpp>
 
+//#include "GallantSignal.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CompleteMIDINote.h"
 #include "UnboundMIDIBuffer.h"
@@ -17,6 +18,11 @@ public:
 
     void processMIDIBuffer (MidiBuffer& inputMIDIBuffer);
     inline void reset (int inputBlockSize) { mBlockSize = inputBlockSize; };
+
+    //Gallant::Signal0<> parameterChangeSignal;
+
+    inline void setTimingStandardDeviationInSamples (double input) { mTimingStandardDeviationInSamples = input; };
+    inline void setMaximumDelayTimeInSamples (double input)        { mMaximumDelayTimeInSamples = input; };
 
 private:
 
@@ -33,6 +39,9 @@ private:
     double generateNormalRandomNumber();
 
     void pushMessageFromBuffer (TaggedMIDIMessage& inputMessage);
+
+    double mTimingStandardDeviationInSamples;
+    double mMaximumDelayTimeInSamples;
 
 };
 

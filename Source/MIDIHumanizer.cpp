@@ -30,9 +30,9 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
             {
                 if (currentMidiMessage.isNoteOn())
                 {                 
-                    double randomOffset = generateNormalRandomNumber() * 200.0;
-                    double newSampleOffset = randomOffset
-                                           + 5000.0;                  
+                    double randomOffset = generateNormalRandomNumber() * mTimingStandardDeviationInSamples;
+                    double newSampleOffset = randomOffset + mMaximumDelayTimeInSamples;   
+
                     mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = newSampleOffset;
 
                     TaggedMIDIMessage noteOnMessage (currentMidiMessage, 
@@ -61,6 +61,8 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
 
                 midiBufferIsNotEmpty = inputMIDIBufferIterator.getNextEvent (currentMidiMessage, midiMessageSamplePosition);
             }
+
+            //parameterChangeSignal();
         }
     }
 

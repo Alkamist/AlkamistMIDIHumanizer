@@ -13,6 +13,15 @@ AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
     addParameter (timingStandardDeviation  = new FloatParameter (this, 0.0f, 0.0f, 100.0f, "Timing Standard Deviation", "ms", sampleRate, samplesPerBlock));
 
     reset();
+
+    double standardDeviation = getSampleRate() * timingStandardDeviation->getUnNormalizedUnSmoothedValue() / 1000.0;
+    mMIDIHumanizer.setTimingStandardDeviationInSamples (standardDeviation);
+
+    double maximumDelayTime = standardDeviation / 0.341;
+    mMIDIHumanizer.setMaximumDelayTimeInSamples (maximumDelayTime);
+
+    setLatencySamples (maximumDelayTime);
+    //mMIDIHumanizer.parameterChangeSignal.Connect (this, &AlkamistMIDIHumanizerAudioProcessor::handleParameterChanges);
 }
 
 AlkamistMIDIHumanizerAudioProcessor::~AlkamistMIDIHumanizerAudioProcessor()
@@ -83,19 +92,14 @@ void AlkamistMIDIHumanizerAudioProcessor::releaseResources()
     // spare memory, etc.
 }
 
-void AlkamistMIDIHumanizerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
+void AlkamistMIDIHumanizerAudioProcessor::processBlock (AudioSampleBuffer& /*buffer*/, MidiBuffer& midiMessages)
 {
-    //setLatencySamples (mMaximumDelayTimeInSamples);
+    if (mParameterChangeFlag == true)
+    {
+        handleParameterChanges();
+    }
 
     mMIDIHumanizer.processMIDIBuffer (midiMessages);
-
-    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-    {
-        if (mParameterChangeFlag == true)
-        {
-            handleParameterChanges();
-        }
-    }
 
     clearParameterChanges();
     mParameterChangeFlag = false;
@@ -154,12 +158,23 @@ void AlkamistMIDIHumanizerAudioProcessor::clearParameterChanges()
 
 void AlkamistMIDIHumanizerAudioProcessor::handleParameterChanges()
 {
-    if (timingStandardDeviation->needsToChange())  
+    /*if (timingStandardDeviation->needsToChange())  
     {
         timingStandardDeviation->processPerSample();
+        double standardDeviation = getSampleRate() * timingStandardDeviation->getUnNormalizedSmoothedValue() / 1000.0;
+        mMIDIHumanizer.setTimingStandardDeviationInSamples (standardDeviation);
+        mMIDIHumanizer.setMaximumDelayTimeInSamples (standardDeviation / 0.341);
+    }*/
 
-        mTimingStandardDeviationInSamples = getSampleRate() * timingStandardDeviation->getUnNormalizedSmoothedValue() / 1000.0;
-        mMaximumDelayTimeInSamples = mTimingStandardDeviationInSamples / 0.341;
+    if (timingStandardDeviation->needsToChange())  
+    {
+        double standardDeviation = getSampleRate() * timingStandardDeviation->getUnNormalizedUnSmoothedValue() / 1000.0;
+        mMIDIHumanizer.setTimingStandardDeviationInSamples (standardDeviation);
+
+        double maximumDelayTime = standardDeviation / 0.341;
+        mMIDIHumanizer.setMaximumDelayTimeInSamples (maximumDelayTime);
+
+        setLatencySamples (maximumDelayTime);
     }
 }
 

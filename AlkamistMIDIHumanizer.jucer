@@ -13,6 +13,8 @@
               jucerVersion="3.2.0" companyName="Alkamist Audio">
   <MAINGROUP id="UDrkAm" name="AlkamistMIDIHumanizer">
     <GROUP id="{46759811-F376-B7F2-3A1C-5B0B989CDAAF}" name="Source">
+      <FILE id="Ih2x3x" name="Delegate.h" compile="0" resource="0" file="Source/Delegate.h"/>
+      <FILE id="Eh5mfO" name="GallantSignal.h" compile="0" resource="0" file="Source/GallantSignal.h"/>
       <FILE id="V9e0ZO" name="CompleteMIDINote.cpp" compile="1" resource="0"
             file="Source/CompleteMIDINote.cpp"/>
       <FILE id="wZWRaP" name="CompleteMIDINote.h" compile="0" resource="0"
@@ -49,11 +51,11 @@
     <VS2010 targetFolder="Builds/VisualStudio2010" vstFolder="c:\SDKs\vstsdk2.4"
             externalLibraries="" extraDefs="_SCL_SECURE_NO_WARNINGS">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+        <CONFIGURATION name="Debug" winWarningLevel="2" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="AlkamistMIDIHumanizer"
                        postbuildCommand="copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst&quot;&#10;copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;C:\VSTPluginsDebug\$(TargetFileName)&quot;"
                        libraryPath="" headerPath="F:\Programming Documents\boost_1_59_0"/>
-        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+        <CONFIGURATION name="Release" winWarningLevel="2" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="AlkamistMIDIHumanizer"
                        libraryPath="" headerPath="F:\Programming Documents\boost_1_59_0"/>
       </CONFIGURATIONS>

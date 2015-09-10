@@ -1602,6 +1602,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Delegate.h">
+      <Filter>AlkamistMIDIHumanizer\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GallantSignal.h">
+      <Filter>AlkamistMIDIHumanizer\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\CompleteMIDINote.h">
       <Filter>AlkamistMIDIHumanizer\Source</Filter>
     </ClInclude>

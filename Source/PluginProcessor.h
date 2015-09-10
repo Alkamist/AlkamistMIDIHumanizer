@@ -68,9 +68,6 @@ private:
     void clearParameterChanges();
     bool mParameterChangeFlag;
 
-    double mTimingStandardDeviationInSamples;
-    double mMaximumDelayTimeInSamples;
-
     MIDIHumanizer mMIDIHumanizer;
 
     //==============================================================================
