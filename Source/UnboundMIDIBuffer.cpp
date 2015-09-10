@@ -49,7 +49,6 @@ void UnboundMIDIBuffer::fixNoteOverlaps()
     for (int iii = 0; iii < mInternalNoteBuffer.size(); ++iii)
     {
         CompleteMIDINote& currentNote = mInternalNoteBuffer[iii];
-
         if (! currentNote.noteOff.isPlaceholder)
         {
             for (int jjj = 0; jjj < mInternalNoteBuffer.size(); ++jjj)
@@ -64,13 +63,10 @@ void UnboundMIDIBuffer::fixNoteOverlaps()
                     {
                         if (currentNote.noteOn.samplePosition < checkingNote.noteOn.samplePosition)
                         {     
-                            if (! checkingNote.noteOff.isPlaceholder)
+                            if (currentNote.noteOff.samplePosition > checkingNote.noteOn.samplePosition)
                             {
-                                if (currentNote.noteOff.samplePosition > checkingNote.noteOn.samplePosition)
-                                {
-                                    currentNote.noteOff.samplePosition = checkingNote.noteOn.samplePosition - 1;
-                                }
-                            }
+                                currentNote.noteOff.samplePosition = checkingNote.noteOn.samplePosition - 1;
+                            }              
                         }
                     }
                 }
