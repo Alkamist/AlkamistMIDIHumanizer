@@ -24,6 +24,7 @@ public:
 
     inline void setTimingStandardDeviationInSamples (double input) { mTimingStandardDeviationInSamples = input; };
     inline void setMaximumDelayTimeInSamples (double input)        { mMaximumDelayTimeInSamples = input; };
+    inline void setVelocityStandardDeviation (double input)        { mVelocityStandardDeviation = input; };
 
 private:
 
@@ -37,13 +38,15 @@ private:
     MidiBuffer mOtherMIDIEvents;
     std::vector<TaggedMIDIMessage> mOtherMIDIExtendedBuffer;
 
-    boost::mt19937 mMersenneTwisterRNG;
-    double generateNormalRandomNumber();
+    boost::mt19937 mMersenneTwisterTiming;
+    boost::mt19937 mMersenneTwisterVelocity;
+    double generateNormalRandomNumber (boost::mt19937& inputRNG);
 
     void pushMessageFromBuffer (TaggedMIDIMessage& inputMessage);
 
     double mTimingStandardDeviationInSamples;
     double mMaximumDelayTimeInSamples;
+    double mVelocityStandardDeviation;
 
 };
 

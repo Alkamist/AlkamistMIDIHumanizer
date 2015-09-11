@@ -10,7 +10,7 @@ AlkamistMIDIHumanizerAudioProcessorEditor::AlkamistMIDIHumanizerAudioProcessorEd
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (390, 100);
+    setSize (240, 128);
 
     addAndMakeVisible(mMainEditorWindow = new MainEditorWindow(mParentProcessor));
 }

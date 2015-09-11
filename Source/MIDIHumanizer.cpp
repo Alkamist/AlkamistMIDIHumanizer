@@ -4,7 +4,8 @@
 
 MIDIHumanizer::MIDIHumanizer()
 {
-    mMersenneTwisterRNG.seed ((unsigned int) std::time (0));
+    mMersenneTwisterTiming.seed ((unsigned int) std::time (0));
+    mMersenneTwisterVelocity.seed (unsigned int (std::time (0)) + 4826);
 }
 
 MIDIHumanizer::~MIDIHumanizer()
@@ -30,10 +31,20 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
             {
                 if (currentMidiMessage.isNoteOn())
                 {                 
-                    double randomOffset = generateNormalRandomNumber() * mTimingStandardDeviationInSamples;
+                    double randomOffset = generateNormalRandomNumber(mMersenneTwisterTiming) * mTimingStandardDeviationInSamples;
                     double newSampleOffset = randomOffset + mMaximumDelayTimeInSamples;
 
                     mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = newSampleOffset;
+
+                    double newVelocity = currentMidiMessage.getFloatVelocity() 
+                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation / 127.0;
+
+                    if (newVelocity > 1.0)
+                    {
+                        newVelocity = 1.0;
+                    }
+
+                    currentMidiMessage.setVelocity (float (newVelocity));
 
                     TaggedMIDIMessage noteOnMessage (currentMidiMessage, 
                                                      int (midiMessageSamplePosition 
@@ -44,6 +55,16 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
 
                 if (currentMidiMessage.isNoteOff())
                 {
+                    double newVelocity = currentMidiMessage.getFloatVelocity() 
+                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation / 127.0;
+
+                    if (newVelocity > 1.0)
+                    {
+                        newVelocity = 1.0;
+                    }
+
+                    currentMidiMessage.setVelocity (float (newVelocity));
+
                     TaggedMIDIMessage noteOffMessage (currentMidiMessage, 
                                                       int (midiMessageSamplePosition 
                                                     + mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()]),
@@ -135,11 +156,11 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
 // Generates a normally distributed random number with a
 // mean of 0.0, standard deviation of 1.0, and range of 
 // ~ -2.933 to 2.933.
-double MIDIHumanizer::generateNormalRandomNumber()
+double MIDIHumanizer::generateNormalRandomNumber (boost::mt19937& inputRNG)
 { 
     boost::normal_distribution<> normalDistribution (0.0, 1.0);
 
-    return (double) normalDistribution (mMersenneTwisterRNG);
+    return (double) normalDistribution (inputRNG);
 }
 
 void MIDIHumanizer::pushMessageFromBuffer (TaggedMIDIMessage& inputMessage)

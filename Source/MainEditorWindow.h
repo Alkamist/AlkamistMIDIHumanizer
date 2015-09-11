@@ -72,6 +72,8 @@ private:
     //==============================================================================
     ScopedPointer<Slider> timingStandardDeviationSlider;
     ScopedPointer<Label> timingStandardDeviationLabel;
+    ScopedPointer<Slider> velocityStandardDeviationSlider;
+    ScopedPointer<Label> velocityStandardDeviationLabel;
 
 
     //==============================================================================

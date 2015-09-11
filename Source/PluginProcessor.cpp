@@ -13,12 +13,12 @@ AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
     int samplesPerBlock = getBlockSize();
 
     addParameter (timingStandardDeviation  = new FloatParameter (this, 0.0f, 0.0f, 30.0f, "Timing Standard Deviation", "ms", sampleRate, samplesPerBlock));
+    addParameter (velocityStandardDeviation  = new FloatParameter (this, 0.0f, 0.0f, 127.0f, "Velocity Standard Deviation", "", sampleRate, samplesPerBlock));
 
     reset();
 
-    double standardDeviation = getSampleRate() * timingStandardDeviation->getUnNormalizedUnSmoothedValue() / 1000.0;
-    mMIDIHumanizer.setTimingStandardDeviationInSamples (standardDeviation);
-
+    mMIDIHumanizer.setTimingStandardDeviationInSamples (getSampleRate() * timingStandardDeviation->getUnNormalizedUnSmoothedValue() / 1000.0);
+    mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedUnSmoothedValue());
     mMIDIHumanizer.setMaximumDelayTimeInSamples (PDC_DELAY_TIME);
 
     setLatencySamples (PDC_DELAY_TIME);
@@ -126,6 +126,9 @@ void AlkamistMIDIHumanizerAudioProcessor::getStateInformation (MemoryBlock& dest
     xmlPointer = xmlRoot.createNewChildElement ("timingStandardDeviation");
     xmlPointer->addTextElement (String (timingStandardDeviation->getValue()));
 
+    xmlPointer = xmlRoot.createNewChildElement ("velocityStandardDeviation");
+    xmlPointer->addTextElement (String (velocityStandardDeviation->getValue()));
+
     // Use this helper function to stuff it into the binary blob and return it.
     copyXmlToBinary (xmlRoot, destData);
 }
@@ -146,6 +149,12 @@ void AlkamistMIDIHumanizerAudioProcessor::setStateInformation (const void* data,
                 String text = xmlChildPointer->getAllSubText();
                 timingStandardDeviation->setValue (text.getFloatValue());
             }
+
+            if(xmlChildPointer->hasTagName("velocityStandardDeviation"))
+            {
+                String text = xmlChildPointer->getAllSubText();
+                velocityStandardDeviation->setValue (text.getFloatValue());
+            }
         }
     }
 }
@@ -154,6 +163,7 @@ void AlkamistMIDIHumanizerAudioProcessor::setStateInformation (const void* data,
 void AlkamistMIDIHumanizerAudioProcessor::clearParameterChanges()
 {
     timingStandardDeviation->clearParameterChangeFlag();
+    velocityStandardDeviation->clearParameterChangeFlag();
 
     mParameterChangeFlag = false;
 }
@@ -173,6 +183,12 @@ void AlkamistMIDIHumanizerAudioProcessor::handleParameterChanges()
         double standardDeviation = getSampleRate() * timingStandardDeviation->getUnNormalizedUnSmoothedValue() / 1000.0;
         mMIDIHumanizer.setTimingStandardDeviationInSamples (standardDeviation);
     }
+
+    if (velocityStandardDeviation->needsToChange())  
+    {
+        double standardDeviation = velocityStandardDeviation->getUnNormalizedUnSmoothedValue();
+        mMIDIHumanizer.setVelocityStandardDeviation (standardDeviation);
+    }
 }
 
 void AlkamistMIDIHumanizerAudioProcessor::reset()
@@ -184,6 +200,7 @@ void AlkamistMIDIHumanizerAudioProcessor::reset()
 
     // Parameters
     timingStandardDeviation->reset (sampleRate, samplesPerBlock);
+    velocityStandardDeviation->reset (sampleRate, samplesPerBlock);
 }
 //==============================================================================
 // This creates new instances of the plugin..

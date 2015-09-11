@@ -61,6 +61,7 @@ public:
     inline void signalForParameterChange() { mParameterChangeFlag = true; };
 
     FloatParameter* timingStandardDeviation;
+    FloatParameter* velocityStandardDeviation;
 
 private:
 
