@@ -31,7 +31,7 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
                 if (currentMidiMessage.isNoteOn())
                 {                 
                     double randomOffset = generateNormalRandomNumber() * mTimingStandardDeviationInSamples;
-                    double newSampleOffset = randomOffset + mMaximumDelayTimeInSamples;   
+                    double newSampleOffset = randomOffset + mMaximumDelayTimeInSamples;
 
                     mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = newSampleOffset;
 
@@ -133,7 +133,8 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
 }
 
 // Generates a normally distributed random number with a
-// standard deviation of 1 and a range of ~ -2.933 to 2.933.
+// mean of 0.0, standard deviation of 1.0, and range of 
+// ~ -2.933 to 2.933.
 double MIDIHumanizer::generateNormalRandomNumber()
 { 
     boost::normal_distribution<> normalDistribution (0.0, 1.0);

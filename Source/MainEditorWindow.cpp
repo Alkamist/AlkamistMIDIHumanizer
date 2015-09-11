@@ -36,7 +36,7 @@ MainEditorWindow::MainEditorWindow (AlkamistMIDIHumanizerAudioProcessor& inputPr
     //[/Constructor_pre]
 
     addAndMakeVisible (timingStandardDeviationSlider = new Slider ("Timing Standard Deviation Slider"));
-    timingStandardDeviationSlider->setRange (0, 100, 0.01);
+    timingStandardDeviationSlider->setRange (0, 30, 0.01);
     timingStandardDeviationSlider->setSliderStyle (Slider::LinearHorizontal);
     timingStandardDeviationSlider->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     timingStandardDeviationSlider->setColour (Slider::thumbColourId, Colour (0xff909090));
@@ -219,7 +219,7 @@ BEGIN_JUCER_METADATA
   <SLIDER name="Timing Standard Deviation Slider" id="2a2a0656b43acdbd"
           memberName="timingStandardDeviationSlider" virtualName="" explicitFocusOrder="0"
           pos="8 8 264 24" thumbcol="ff909090" textboxtext="ffdddddd" textboxbkgd="ff4a4a4a"
-          textboxhighlight="40e4e4e4" min="0" max="100" int="0.01" style="LinearHorizontal"
+          textboxhighlight="40e4e4e4" min="0" max="30" int="0.01" style="LinearHorizontal"
           textBoxPos="TextBoxLeft" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1"/>
   <LABEL name="Timing Standard Deviation Label" id="a78ae72ed3b4912c"

@@ -3,6 +3,8 @@
 
 #include "PluginProcessor.h"
 
+const int PDC_DELAY_TIME = 4096;
+
 //==============================================================================
 AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
     : mParameterChangeFlag (false)
@@ -10,17 +12,16 @@ AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
     double sampleRate = getSampleRate();
     int samplesPerBlock = getBlockSize();
 
-    addParameter (timingStandardDeviation  = new FloatParameter (this, 0.0f, 0.0f, 100.0f, "Timing Standard Deviation", "ms", sampleRate, samplesPerBlock));
+    addParameter (timingStandardDeviation  = new FloatParameter (this, 0.0f, 0.0f, 30.0f, "Timing Standard Deviation", "ms", sampleRate, samplesPerBlock));
 
     reset();
 
     double standardDeviation = getSampleRate() * timingStandardDeviation->getUnNormalizedUnSmoothedValue() / 1000.0;
     mMIDIHumanizer.setTimingStandardDeviationInSamples (standardDeviation);
 
-    double maximumDelayTime = standardDeviation / 0.341;
-    mMIDIHumanizer.setMaximumDelayTimeInSamples (maximumDelayTime);
+    mMIDIHumanizer.setMaximumDelayTimeInSamples (PDC_DELAY_TIME);
 
-    setLatencySamples ((int) maximumDelayTime);
+    setLatencySamples (PDC_DELAY_TIME);
     //mMIDIHumanizer.parameterChangeSignal.Connect (this, &AlkamistMIDIHumanizerAudioProcessor::handleParameterChanges);
 }
 
@@ -102,7 +103,6 @@ void AlkamistMIDIHumanizerAudioProcessor::processBlock (AudioSampleBuffer& /*buf
     mMIDIHumanizer.processMIDIBuffer (midiMessages);
 
     clearParameterChanges();
-    mParameterChangeFlag = false;
 }
 
 //==============================================================================
@@ -154,6 +154,8 @@ void AlkamistMIDIHumanizerAudioProcessor::setStateInformation (const void* data,
 void AlkamistMIDIHumanizerAudioProcessor::clearParameterChanges()
 {
     timingStandardDeviation->clearParameterChangeFlag();
+
+    mParameterChangeFlag = false;
 }
 
 void AlkamistMIDIHumanizerAudioProcessor::handleParameterChanges()
@@ -170,11 +172,6 @@ void AlkamistMIDIHumanizerAudioProcessor::handleParameterChanges()
     {
         double standardDeviation = getSampleRate() * timingStandardDeviation->getUnNormalizedUnSmoothedValue() / 1000.0;
         mMIDIHumanizer.setTimingStandardDeviationInSamples (standardDeviation);
-
-        double maximumDelayTime = standardDeviation / 0.341;
-        mMIDIHumanizer.setMaximumDelayTimeInSamples (maximumDelayTime);
-
-        setLatencySamples ((int) maximumDelayTime);
     }
 }
 
