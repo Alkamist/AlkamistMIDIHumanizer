@@ -20,7 +20,7 @@ AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
     double maximumDelayTime = standardDeviation / 0.341;
     mMIDIHumanizer.setMaximumDelayTimeInSamples (maximumDelayTime);
 
-    setLatencySamples (maximumDelayTime);
+    setLatencySamples ((int) maximumDelayTime);
     //mMIDIHumanizer.parameterChangeSignal.Connect (this, &AlkamistMIDIHumanizerAudioProcessor::handleParameterChanges);
 }
 
@@ -174,7 +174,7 @@ void AlkamistMIDIHumanizerAudioProcessor::handleParameterChanges()
         double maximumDelayTime = standardDeviation / 0.341;
         mMIDIHumanizer.setMaximumDelayTimeInSamples (maximumDelayTime);
 
-        setLatencySamples (maximumDelayTime);
+        setLatencySamples ((int) maximumDelayTime);
     }
 }
 

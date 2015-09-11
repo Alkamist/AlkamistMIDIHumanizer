@@ -1,6 +1,7 @@
 #ifndef MIDIHUMANIZER_H_INCLUDED
 #define MIDIHUMANIZER_H_INCLUDED
 
+#include <vector>
 #include <boost/random.hpp>
 #include <boost/random/normal_distribution.hpp>
 
@@ -34,6 +35,7 @@ private:
     UnboundMIDIBuffer mUnboundMIDIBuffer;
     MidiBuffer mHumanizedMIDIBuffer;
     MidiBuffer mOtherMIDIEvents;
+    std::vector<TaggedMIDIMessage> mOtherMIDIExtendedBuffer;
 
     boost::mt19937 mMersenneTwisterRNG;
     double generateNormalRandomNumber();
