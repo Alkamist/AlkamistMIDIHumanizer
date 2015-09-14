@@ -1268,8 +1268,6 @@ copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;C:\VSTPluginsDebug\$(Targe
     <ClCompile Include="..\..\..\..\Programming Documents\JUCE-master\modules\juce_audio_plugin_client\VST3\juce_VST3_Wrapper.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Delegate.h"/>
-    <ClInclude Include="..\..\Source\GallantSignal.h"/>
     <ClInclude Include="..\..\Source\CompleteMIDINote.h"/>
     <ClInclude Include="..\..\Source\UnboundMIDIBuffer.h"/>
     <ClInclude Include="..\..\Source\MIDIHumanizer.h"/>

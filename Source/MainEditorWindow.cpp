@@ -36,7 +36,7 @@ MainEditorWindow::MainEditorWindow (AlkamistMIDIHumanizerAudioProcessor& inputPr
     //[/Constructor_pre]
 
     addAndMakeVisible (timingStandardDeviationSlider = new Slider ("Timing Standard Deviation Slider"));
-    timingStandardDeviationSlider->setRange (0, 30, 0.01);
+    timingStandardDeviationSlider->setRange (0, 15, 0.01);
     timingStandardDeviationSlider->setSliderStyle (Slider::RotaryVerticalDrag);
     timingStandardDeviationSlider->setTextBoxStyle (Slider::TextBoxAbove, false, 80, 20);
     timingStandardDeviationSlider->setColour (Slider::thumbColourId, Colour (0xff909090));
@@ -59,7 +59,7 @@ MainEditorWindow::MainEditorWindow (AlkamistMIDIHumanizerAudioProcessor& inputPr
     timingStandardDeviationLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (velocityStandardDeviationSlider = new Slider ("Velocity Standard Deviation Slider"));
-    velocityStandardDeviationSlider->setRange (0, 30, 0.01);
+    velocityStandardDeviationSlider->setRange (0, 32, 0.01);
     velocityStandardDeviationSlider->setSliderStyle (Slider::RotaryVerticalDrag);
     velocityStandardDeviationSlider->setTextBoxStyle (Slider::TextBoxAbove, false, 80, 20);
     velocityStandardDeviationSlider->setColour (Slider::thumbColourId, Colour (0xff909090));
@@ -263,7 +263,7 @@ BEGIN_JUCER_METADATA
           memberName="timingStandardDeviationSlider" virtualName="" explicitFocusOrder="0"
           pos="8 40 104 88" thumbcol="ff909090" trackcol="7fdddddd" rotarysliderfill="7fdddddd"
           rotaryslideroutline="66dddddd" textboxtext="ffdddddd" textboxbkgd="ff4a4a4a"
-          textboxhighlight="40e4e4e4" min="0" max="30" int="0.01" style="RotaryVerticalDrag"
+          textboxhighlight="40e4e4e4" min="0" max="15" int="0.01" style="RotaryVerticalDrag"
           textBoxPos="TextBoxAbove" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1"/>
   <LABEL name="Timing Standard Deviation Label" id="a78ae72ed3b4912c"
@@ -276,7 +276,7 @@ BEGIN_JUCER_METADATA
           memberName="velocityStandardDeviationSlider" virtualName="" explicitFocusOrder="0"
           pos="128 40 104 88" thumbcol="ff909090" trackcol="7fdddddd" rotarysliderfill="7fdddddd"
           rotaryslideroutline="66dddddd" textboxtext="ffdddddd" textboxbkgd="ff4a4a4a"
-          textboxhighlight="40e4e4e4" min="0" max="30" int="0.01" style="RotaryVerticalDrag"
+          textboxhighlight="40e4e4e4" min="0" max="32" int="0.01" style="RotaryVerticalDrag"
           textBoxPos="TextBoxAbove" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1"/>
   <LABEL name="Velocity Standard Deviation Label" id="d53ddcf2c0e714ef"

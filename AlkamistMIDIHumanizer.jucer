@@ -13,8 +13,6 @@
               jucerVersion="3.2.0" companyName="Alkamist Audio">
   <MAINGROUP id="UDrkAm" name="AlkamistMIDIHumanizer">
     <GROUP id="{46759811-F376-B7F2-3A1C-5B0B989CDAAF}" name="Source">
-      <FILE id="Ih2x3x" name="Delegate.h" compile="0" resource="0" file="Source/Delegate.h"/>
-      <FILE id="Eh5mfO" name="GallantSignal.h" compile="0" resource="0" file="Source/GallantSignal.h"/>
       <FILE id="V9e0ZO" name="CompleteMIDINote.cpp" compile="1" resource="0"
             file="Source/CompleteMIDINote.cpp"/>
       <FILE id="wZWRaP" name="CompleteMIDINote.h" compile="0" resource="0"
