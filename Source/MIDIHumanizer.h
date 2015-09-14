@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <boost/random.hpp>
-#include <boost/random/normal_distribution.hpp>
+#include <boost/random/uniform_01.hpp>
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CompleteMIDINote.h"
@@ -45,7 +45,7 @@ private:
 
     boost::mt19937 mMersenneTwisterTiming;
     boost::mt19937 mMersenneTwisterVelocity;
-    double generateNormalRandomNumber (boost::mt19937& inputRNG);
+    double generateUniformRandomNumber (boost::mt19937& inputRNG);
 
     void pushMessageFromBuffer (TaggedMIDIMessage& inputMessage);
 

@@ -31,13 +31,13 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
             {
                 if (currentMidiMessage.isNoteOn())
                 {                 
-                    double randomOffset = generateNormalRandomNumber(mMersenneTwisterTiming) * mTimingStandardDeviationInSamples[sampleIndex];
+                    double randomOffset = generateUniformRandomNumber(mMersenneTwisterTiming) * mTimingStandardDeviationInSamples[sampleIndex];
                     double newSampleOffset = randomOffset + mMaximumDelayTimeInSamples;
 
                     mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = newSampleOffset;
 
                     double newVelocity = currentMidiMessage.getFloatVelocity() 
-                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;
+                                       + generateUniformRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;
 
                     if (newVelocity > 1.0)
                     {
@@ -61,7 +61,7 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
                 if (currentMidiMessage.isNoteOff())
                 {
                     double newVelocity = currentMidiMessage.getFloatVelocity() 
-                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;
+                                       + generateUniformRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;
 
                     if (newVelocity > 1.0)
                     {
@@ -161,14 +161,13 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
     mOtherMIDIEvents.clear();
 }
 
-// Generates a normally distributed random number with a
-// mean of 0.0, standard deviation of 1.0, and range of 
-// ~ -2.933 to 2.933.
-double MIDIHumanizer::generateNormalRandomNumber (boost::mt19937& inputRNG)
+// Generates a uniformly distributed random number with a
+// mean of 0.0 and a range of -1 to 1.
+double MIDIHumanizer::generateUniformRandomNumber (boost::mt19937& inputRNG)
 { 
-    boost::normal_distribution<> normalDistribution (0.0, 1.0);
+    boost::uniform_01<> uniformDistribution;
 
-    return (double) normalDistribution (inputRNG);
+    return (double) 2.0 * uniformDistribution (inputRNG) - 1.0;
 }
 
 void MIDIHumanizer::pushMessageFromBuffer (TaggedMIDIMessage& inputMessage)

@@ -2,7 +2,7 @@
 #include "FloatParameter.h"
 #include "PluginProcessor.h"
 
-const int PDC_DELAY_TIME = 2048;
+const int PDC_DELAY_TIME = 1024;
 
 //==============================================================================
 AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
@@ -10,8 +10,8 @@ AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
     double sampleRate = getSampleRate();
     int samplesPerBlock = getBlockSize();
 
-    addParameter (timingStandardDeviation  = new FloatParameter (0.0f, 0.0f, 15.0f, "Timing Standard Deviation", "ms", sampleRate, samplesPerBlock));
-    addParameter (velocityStandardDeviation  = new FloatParameter (0.0f, 0.0f, 32.0f, "Velocity Standard Deviation", "", sampleRate, samplesPerBlock));
+    addParameter (timingStandardDeviation  = new FloatParameter (0.0f, 0.0f, 20.0f, "Timing Standard Deviation", "ms", sampleRate, samplesPerBlock));
+    addParameter (velocityStandardDeviation  = new FloatParameter (0.0f, 0.0f, 64.0f, "Velocity Standard Deviation", "", sampleRate, samplesPerBlock));
 
     reset();
 
