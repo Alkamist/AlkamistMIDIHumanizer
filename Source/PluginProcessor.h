@@ -56,8 +56,8 @@ public:
     void midiHumanizerCallback();
     void reset();
 
-    FloatParameter* timingStandardDeviation;
-    FloatParameter* velocityStandardDeviation;
+    FloatParameter* timingRange;
+    FloatParameter* velocityRange;
 
 private:
 

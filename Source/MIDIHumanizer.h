@@ -20,15 +20,13 @@ public:
     void reset (double inputSampleRate, int inputBlockSize);
 
     // Input is ms.
-    void setTimingStandardDeviation (std::vector<float> inputVector);
+    void setTimingRange (std::vector<float> inputVector);
 
     // Input is 4 bit Velocity (0-127).
-    inline void setVelocityStandardDeviation (std::vector<float> inputVector) { mVelocityStandardDeviation = inputVector; };
+    inline void setVelocityRange (std::vector<float> inputVector) { mVelocityRange = inputVector; };
 
     // Input is samples.
-    inline void setMaximumDelayTime (double input)                            { mMaximumDelayTimeInSamples = input; };
-
-    std::vector<float> mTimingStandardDeviationInSamples;
+    inline void setMaximumDelayTime (double input)                { mMaximumDelayTimeInSamples = input; };
 
 private:
 
@@ -49,8 +47,8 @@ private:
 
     void pushMessageFromBuffer (TaggedMIDIMessage& inputMessage);
 
-
-    std::vector<float> mVelocityStandardDeviation;
+    std::vector<float> mTimingRangeInSamples;
+    std::vector<float> mVelocityRange;
 
     double mMaximumDelayTimeInSamples;
 

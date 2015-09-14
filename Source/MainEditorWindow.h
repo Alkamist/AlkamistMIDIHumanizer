@@ -70,10 +70,10 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<Slider> timingStandardDeviationSlider;
-    ScopedPointer<Label> timingStandardDeviationLabel;
-    ScopedPointer<Slider> velocityStandardDeviationSlider;
-    ScopedPointer<Label> velocityStandardDeviationLabel;
+    ScopedPointer<Slider> timingRangeSlider;
+    ScopedPointer<Label> timingRangeLabel;
+    ScopedPointer<Slider> velocityRangeSlider;
+    ScopedPointer<Label> velocityRangeLabel;
 
 
     //==============================================================================

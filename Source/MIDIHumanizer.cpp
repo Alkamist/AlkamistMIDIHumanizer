@@ -31,13 +31,13 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
             {
                 if (currentMidiMessage.isNoteOn())
                 {                 
-                    double randomOffset = generateUniformRandomNumber(mMersenneTwisterTiming) * mTimingStandardDeviationInSamples[sampleIndex];
+                    double randomOffset = generateUniformRandomNumber(mMersenneTwisterTiming) * mTimingRangeInSamples[sampleIndex];
                     double newSampleOffset = randomOffset + mMaximumDelayTimeInSamples;
 
                     mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = newSampleOffset;
 
                     double newVelocity = currentMidiMessage.getFloatVelocity() 
-                                       + generateUniformRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;
+                                       + generateUniformRandomNumber(mMersenneTwisterVelocity) * mVelocityRange[sampleIndex] / 127.0;
 
                     if (newVelocity > 1.0)
                     {
@@ -61,7 +61,7 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
                 if (currentMidiMessage.isNoteOff())
                 {
                     double newVelocity = currentMidiMessage.getFloatVelocity() 
-                                       + generateUniformRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;
+                                       + generateUniformRandomNumber(mMersenneTwisterVelocity) * mVelocityRange[sampleIndex] / 127.0;
 
                     if (newVelocity > 1.0)
                     {
@@ -190,7 +190,7 @@ void MIDIHumanizer::pushMessageFromBuffer (TaggedMIDIMessage& inputMessage)
     }
 }
 
-void MIDIHumanizer::setTimingStandardDeviation (std::vector<float> inputVector)   
+void MIDIHumanizer::setTimingRange (std::vector<float> inputVector)   
 { 
     std::vector<float> bufferInSamples (inputVector);
 
@@ -201,7 +201,7 @@ void MIDIHumanizer::setTimingStandardDeviation (std::vector<float> inputVector)
         bufferInSamples[index] = valueInSamples;
     }
 
-    mTimingStandardDeviationInSamples = bufferInSamples; 
+    mTimingRangeInSamples = bufferInSamples; 
 };
 
 void MIDIHumanizer::reset (double inputSampleRate, int inputBlockSize) 
@@ -209,6 +209,6 @@ void MIDIHumanizer::reset (double inputSampleRate, int inputBlockSize)
     mSampleRate = inputSampleRate;
     mBlockSize = inputBlockSize; 
 
-    mTimingStandardDeviationInSamples.resize (mBlockSize);
-    mVelocityStandardDeviation.resize (mBlockSize);
+    mTimingRangeInSamples.resize (mBlockSize);
+    mVelocityRange.resize (mBlockSize);
 };
