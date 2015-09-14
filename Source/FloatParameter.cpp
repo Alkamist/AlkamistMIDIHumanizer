@@ -18,6 +18,8 @@ FloatParameter::FloatParameter (float defaultParameterValue,
       mNormalizableRange (mMinimumValue, mMaximumValue),
       mLinearlySmoothedDouble (defaultParameterValue),
       mParameterChangedThisBlock (false),
+      mParameterWasReset (false),
+      mParameterNeedsToSendFlatBuffer (false),
       mSampleRate (inputSampleRate),
       mBlockSize (inputBlockSize)
 {

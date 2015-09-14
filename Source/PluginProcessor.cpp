@@ -176,7 +176,13 @@ void AlkamistMIDIHumanizerAudioProcessor::bufferParameters()
 
 void AlkamistMIDIHumanizerAudioProcessor::sendParameterBuffers()
 {
-    /*if (timingStandardDeviation->parameterChangedThisBlock())
+    if (timingStandardDeviation->parameterChangedThisBlock())
+    {
+        mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
+
+        timingStandardDeviation->setFlagForSendingFlatBuffer (true);
+    }
+    if (timingStandardDeviation->parameterNeedsToSendFlatBuffer())
     {
         mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
     }
@@ -184,10 +190,16 @@ void AlkamistMIDIHumanizerAudioProcessor::sendParameterBuffers()
     if (velocityStandardDeviation->parameterChangedThisBlock())
     {
         mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
-    }*/
 
-    mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
-    mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
+        velocityStandardDeviation->setFlagForSendingFlatBuffer (true);
+    }
+    if (velocityStandardDeviation->parameterNeedsToSendFlatBuffer())
+    {
+        mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
+    }
+
+    //mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
+    //mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
 }
 
 void AlkamistMIDIHumanizerAudioProcessor::clearParameterChanges()

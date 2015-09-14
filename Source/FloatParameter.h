@@ -24,6 +24,9 @@ public:
     inline bool parameterChangedThisBlock()                                 { return mParameterChangedThisBlock; };
     void clearParameterChange();
 
+    inline bool parameterNeedsToSendFlatBuffer()                            { return mParameterNeedsToSendFlatBuffer; };
+    inline void setFlagForSendingFlatBuffer (bool input)                    { mParameterNeedsToSendFlatBuffer = input; };
+
     inline float getMinimum() const                                         { return mMinimumValue; };
     inline float getMaximum() const                                         { return mMaximumValue; };
     float getUnNormalizedUnSmoothedValue();
@@ -54,6 +57,7 @@ private:
     int mBlockSize;
     bool mParameterChangedThisBlock;
     bool mParameterWasReset;
+    bool mParameterNeedsToSendFlatBuffer;
 
     LinearlySmoothedDouble mLinearlySmoothedDouble;
     NormalisableRange<float> mNormalizableRange;
