@@ -2,7 +2,7 @@
 #include "FloatParameter.h"
 #include "PluginProcessor.h"
 
-const int PDC_DELAY_TIME = 1024;
+const int PDC_DELAY_TIME = 2048;
 
 //==============================================================================
 AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
@@ -186,8 +186,8 @@ void AlkamistMIDIHumanizerAudioProcessor::sendParameterBuffers()
         mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
     }*/
 
-    //mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
-    //mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
+    mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
+    mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
 }
 
 void AlkamistMIDIHumanizerAudioProcessor::clearParameterChanges()

@@ -31,18 +31,13 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
             {
                 if (currentMidiMessage.isNoteOn())
                 {                 
-                    /*double randomOffset = generateNormalRandomNumber(mMersenneTwisterTiming) * mTimingStandardDeviationInSamples[sampleIndex];
-                    double newSampleOffset = randomOffset + mMaximumDelayTimeInSamples;*/
-
-                    double randomOffset = generateNormalRandomNumber(mMersenneTwisterTiming) * 662.0;
+                    double randomOffset = generateNormalRandomNumber(mMersenneTwisterTiming) * mTimingStandardDeviationInSamples[sampleIndex];
                     double newSampleOffset = randomOffset + mMaximumDelayTimeInSamples;
 
                     mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = newSampleOffset;
 
-                    double newVelocity = currentMidiMessage.getFloatVelocity();
-
-                    /*double newVelocity = currentMidiMessage.getFloatVelocity() 
-                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;*/
+                    double newVelocity = currentMidiMessage.getFloatVelocity() 
+                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;
 
                     if (newVelocity > 1.0)
                     {
@@ -65,10 +60,8 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
 
                 if (currentMidiMessage.isNoteOff())
                 {
-                    double newVelocity = currentMidiMessage.getFloatVelocity();
-
-                    /*double newVelocity = currentMidiMessage.getFloatVelocity() 
-                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;*/
+                    double newVelocity = currentMidiMessage.getFloatVelocity() 
+                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;
 
                     if (newVelocity > 1.0)
                     {
