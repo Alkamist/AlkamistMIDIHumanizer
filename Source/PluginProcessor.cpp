@@ -186,8 +186,8 @@ void AlkamistMIDIHumanizerAudioProcessor::sendParameterBuffers()
         mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
     }*/
 
-    mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
-    mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
+    //mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
+    //mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
 }
 
 void AlkamistMIDIHumanizerAudioProcessor::clearParameterChanges()
