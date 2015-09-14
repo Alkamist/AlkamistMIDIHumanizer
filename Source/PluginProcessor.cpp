@@ -1,28 +1,23 @@
 #include "PluginEditor.h"
 #include "FloatParameter.h"
-
 #include "PluginProcessor.h"
 
-const int PDC_DELAY_TIME = 4096;
+const int PDC_DELAY_TIME = 1024;
 
 //==============================================================================
 AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
-    : mParameterChangeFlag (false)
 {
     double sampleRate = getSampleRate();
     int samplesPerBlock = getBlockSize();
 
-    addParameter (timingStandardDeviation  = new FloatParameter (this, 0.0f, 0.0f, 30.0f, "Timing Standard Deviation", "ms", sampleRate, samplesPerBlock));
-    addParameter (velocityStandardDeviation  = new FloatParameter (this, 0.0f, 0.0f, 127.0f, "Velocity Standard Deviation", "", sampleRate, samplesPerBlock));
+    addParameter (timingStandardDeviation  = new FloatParameter (0.0f, 0.0f, 15.0f, "Timing Standard Deviation", "ms", sampleRate, samplesPerBlock));
+    addParameter (velocityStandardDeviation  = new FloatParameter (0.0f, 0.0f, 64.0f, "Velocity Standard Deviation", "", sampleRate, samplesPerBlock));
 
     reset();
 
-    mMIDIHumanizer.setTimingStandardDeviationInSamples (getSampleRate() * timingStandardDeviation->getUnNormalizedUnSmoothedValue() / 1000.0);
-    mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedUnSmoothedValue());
-    mMIDIHumanizer.setMaximumDelayTimeInSamples (PDC_DELAY_TIME);
+    mMIDIHumanizer.setMaximumDelayTime (PDC_DELAY_TIME);
 
     setLatencySamples (PDC_DELAY_TIME);
-    //mMIDIHumanizer.parameterChangeSignal.Connect (this, &AlkamistMIDIHumanizerAudioProcessor::handleParameterChanges);
 }
 
 AlkamistMIDIHumanizerAudioProcessor::~AlkamistMIDIHumanizerAudioProcessor()
@@ -93,16 +88,28 @@ void AlkamistMIDIHumanizerAudioProcessor::releaseResources()
     // spare memory, etc.
 }
 
-void AlkamistMIDIHumanizerAudioProcessor::processBlock (AudioSampleBuffer& /*buffer*/, MidiBuffer& midiMessages)
+void AlkamistMIDIHumanizerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-    if (mParameterChangeFlag == true)
-    {
-        handleParameterChanges();
-    }
+    bufferParameters();
+    sendParameterBuffers();
 
     mMIDIHumanizer.processMIDIBuffer (midiMessages);
 
+    /*for (int channel = 0; channel < getNumInputChannels(); ++channel)
+    {
+        float* channelData = buffer.getWritePointer (channel);
+
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        {
+            float temporaryGain = (mMIDIHumanizer.mTimingStandardDeviationInSamples[sample] * 1000.0 / getSampleRate()) / 15.0;
+            channelData[sample] = temporaryGain;
+        }
+    }*/
+
     clearParameterChanges();
+
+    for (int index = getNumInputChannels(); index < getNumOutputChannels(); ++index)
+        buffer.clear (index, 0, buffer.getNumSamples());
 }
 
 //==============================================================================
@@ -160,35 +167,33 @@ void AlkamistMIDIHumanizerAudioProcessor::setStateInformation (const void* data,
 }
 
 //==============================================================================
-void AlkamistMIDIHumanizerAudioProcessor::clearParameterChanges()
-{
-    timingStandardDeviation->clearParameterChangeFlag();
-    velocityStandardDeviation->clearParameterChangeFlag();
 
-    mParameterChangeFlag = false;
+void AlkamistMIDIHumanizerAudioProcessor::bufferParameters()
+{
+    timingStandardDeviation->bufferParameter();
+    velocityStandardDeviation->bufferParameter();
 }
 
-void AlkamistMIDIHumanizerAudioProcessor::handleParameterChanges()
+void AlkamistMIDIHumanizerAudioProcessor::sendParameterBuffers()
 {
-    /*if (timingStandardDeviation->needsToChange())  
+    /*if (timingStandardDeviation->parameterChangedThisBlock())
     {
-        timingStandardDeviation->processPerSample();
-        double standardDeviation = getSampleRate() * timingStandardDeviation->getUnNormalizedSmoothedValue() / 1000.0;
-        mMIDIHumanizer.setTimingStandardDeviationInSamples (standardDeviation);
-        mMIDIHumanizer.setMaximumDelayTimeInSamples (standardDeviation / 0.341);
+        mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
+    }
+
+    if (velocityStandardDeviation->parameterChangedThisBlock())
+    {
+        mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
     }*/
 
-    if (timingStandardDeviation->needsToChange())  
-    {
-        double standardDeviation = getSampleRate() * timingStandardDeviation->getUnNormalizedUnSmoothedValue() / 1000.0;
-        mMIDIHumanizer.setTimingStandardDeviationInSamples (standardDeviation);
-    }
+    mMIDIHumanizer.setTimingStandardDeviation (timingStandardDeviation->getUnNormalizedSmoothedBuffer());
+    mMIDIHumanizer.setVelocityStandardDeviation (velocityStandardDeviation->getUnNormalizedSmoothedBuffer());
+}
 
-    if (velocityStandardDeviation->needsToChange())  
-    {
-        double standardDeviation = velocityStandardDeviation->getUnNormalizedUnSmoothedValue();
-        mMIDIHumanizer.setVelocityStandardDeviation (standardDeviation);
-    }
+void AlkamistMIDIHumanizerAudioProcessor::clearParameterChanges()
+{
+    timingStandardDeviation->clearParameterChange();
+    velocityStandardDeviation->clearParameterChange();
 }
 
 void AlkamistMIDIHumanizerAudioProcessor::reset()
@@ -196,7 +201,7 @@ void AlkamistMIDIHumanizerAudioProcessor::reset()
     double sampleRate = getSampleRate();
     int samplesPerBlock = getBlockSize();
 
-    mMIDIHumanizer.reset (samplesPerBlock);
+    mMIDIHumanizer.reset (sampleRate, samplesPerBlock);
 
     // Parameters
     timingStandardDeviation->reset (sampleRate, samplesPerBlock);

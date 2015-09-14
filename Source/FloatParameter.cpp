@@ -1,17 +1,13 @@
-#include "PluginProcessor.h"
-
 #include "FloatParameter.h"
 
-FloatParameter::FloatParameter (AlkamistMIDIHumanizerAudioProcessor* inputProcessor,
-                                float defaultParameterValue,
+FloatParameter::FloatParameter (float defaultParameterValue,
                                 float minimumParameterValue,
                                 float maximumParameterValue,
                                 const String& parameterName,
                                 const String& parameterLabel,
                                 double inputSampleRate,
                                 int inputBlockSize)
-    : mParentProcessor (inputProcessor),
-      mUnSmoothedParameterValue (defaultParameterValue),
+    : mUnSmoothedParameterValue (defaultParameterValue),
       mDefaultValue (defaultParameterValue),
       mMinimumValue (minimumParameterValue),
       mMaximumValue (maximumParameterValue),
@@ -19,10 +15,82 @@ FloatParameter::FloatParameter (AlkamistMIDIHumanizerAudioProcessor* inputProces
       mLabel (parameterLabel),
       mNormalizableRange (mMinimumValue, mMaximumValue),
       mLinearlySmoothedDouble (defaultParameterValue),
-      mParameterChangeFlag (false)
+      mParameterChangedThisBlock (false),
+      mSampleRate (inputSampleRate),
+      mBlockSize (inputBlockSize)
 {
     reset (inputSampleRate, inputBlockSize);
 }
+
+float FloatParameter::getUnNormalizedUnSmoothedValue()
+{
+    float unNormalizedValue = mNormalizableRange.convertFrom0to1 (mUnSmoothedParameterValue);
+    return unNormalizedValue;
+}
+
+std::vector<float> FloatParameter::getUnNormalizedSmoothedBuffer()
+{
+    std::vector<float> unNormalizedBuffer (mParameterBuffer.size());
+
+    for (int index = 0; index < mParameterBuffer.size(); ++index)
+    {
+        float currentValue = mParameterBuffer[index];
+        float unNormalizedValue = mNormalizableRange.convertFrom0to1 (currentValue);
+        unNormalizedBuffer[index] = unNormalizedValue;
+    }
+
+    return unNormalizedBuffer;
+}
+
+std::vector<float> FloatParameter::getNormalizedSmoothedBuffer()
+{
+    return mParameterBuffer;
+}
+
+void FloatParameter::setNormalizedValue (float nonNormalizedValue)
+{
+    float newValue = mNormalizableRange.convertTo0to1 (nonNormalizedValue);
+    setValueNotifyingHost (newValue);
+}
+
+void FloatParameter::clearParameterChange()                                      
+{ 
+    if (mParameterChangedThisBlock)
+    {
+        for (int index = 0; index < mBlockSize; ++index)
+        {
+            mParameterBuffer[index] = mUnSmoothedParameterValue;
+        }
+    }
+
+    mParameterChangedThisBlock = false; 
+};
+
+void FloatParameter::bufferParameter()
+{
+    if (mParameterChangedThisBlock)
+    {
+        for (int index = 0; index < mBlockSize; ++index)
+        {
+            mLinearlySmoothedDouble.processPerSample();
+            mParameterBuffer[index] = ((float) mLinearlySmoothedDouble.getCurrentValue());
+        }
+    }
+}
+
+void FloatParameter::reset (double inputSampleRate, int inputBlockSize)
+{
+    mSampleRate = inputSampleRate;
+    mBlockSize = inputBlockSize;
+
+    mParameterBuffer.resize (mBlockSize);
+
+    // Linear Parameter Ramp
+    double smoothingTimeInSeconds = ((double) mBlockSize) / mSampleRate;
+    mLinearlySmoothedDouble.reset (mSampleRate, smoothingTimeInSeconds);
+}
+
+// Overridden Functions:
 
 String FloatParameter::getName (int maximumStringLength) const    
 { 
@@ -41,43 +109,6 @@ String FloatParameter::getText(float inputValue, int) const
 void FloatParameter::setValue (float inputValue)
 {
     mUnSmoothedParameterValue = inputValue;
-    mLinearlySmoothedDouble.setValue (inputValue);
-    mParentProcessor->signalForParameterChange();
-    mParameterChangeFlag = true;
-}
-
-float FloatParameter::getUnNormalizedSmoothedValue()
-{
-    float currentValue = (float) mLinearlySmoothedDouble.getCurrentValue();
-    float unNormalizedValue = mNormalizableRange.convertFrom0to1 (currentValue);
-    return unNormalizedValue;
-}
-
-float FloatParameter::getUnNormalizedUnSmoothedValue()
-{
-    float unNormalizedValue = mNormalizableRange.convertFrom0to1 (mUnSmoothedParameterValue);
-    return unNormalizedValue;
-}
-
-float FloatParameter::getNormalizedSmoothedValue()
-{
-    return (float) mLinearlySmoothedDouble.getCurrentValue();
-}
-
-void FloatParameter::setNormalizedValue (float nonNormalizedValue)
-{
-    float newValue = mNormalizableRange.convertTo0to1 (nonNormalizedValue);
-    setValueNotifyingHost (newValue);
-}
-
-void FloatParameter::processPerSample()
-{
-    mLinearlySmoothedDouble.processPerSample();
-}
-
-void FloatParameter::reset (double inputSampleRate, int inputBlockSize)
-{
-    // Linear Parameter Ramp
-    double smoothingTimeInSeconds = ((double) inputBlockSize) / inputSampleRate;
-    mLinearlySmoothedDouble.reset (inputSampleRate, smoothingTimeInSeconds);
+    mLinearlySmoothedDouble.setTargetValue (mUnSmoothedParameterValue);
+    mParameterChangedThisBlock = true;
 }

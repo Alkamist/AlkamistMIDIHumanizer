@@ -5,7 +5,6 @@
 #include <boost/random.hpp>
 #include <boost/random/normal_distribution.hpp>
 
-//#include "GallantSignal.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CompleteMIDINote.h"
 #include "UnboundMIDIBuffer.h"
@@ -18,19 +17,25 @@ public:
     ~MIDIHumanizer();
 
     void processMIDIBuffer (MidiBuffer& inputMIDIBuffer);
-    inline void reset (int inputBlockSize) { mBlockSize = inputBlockSize; };
+    void reset (double inputSampleRate, int inputBlockSize);
 
-    //Gallant::Signal0<> parameterChangeSignal;
+    // Input is ms.
+    void setTimingStandardDeviation (std::vector<float> inputVector);
 
-    inline void setTimingStandardDeviationInSamples (double input) { mTimingStandardDeviationInSamples = input; };
-    inline void setMaximumDelayTimeInSamples (double input)        { mMaximumDelayTimeInSamples = input; };
-    inline void setVelocityStandardDeviation (double input)        { mVelocityStandardDeviation = input; };
+    // Input is 4 bit Velocity (0-127).
+    inline void setVelocityStandardDeviation (std::vector<float> inputVector) { mVelocityStandardDeviation = inputVector; };
+
+    // Input is samples.
+    inline void setMaximumDelayTime (double input)                            { mMaximumDelayTimeInSamples = input; };
+
+    std::vector<float> mTimingStandardDeviationInSamples;
 
 private:
 
     static const int MAX_NUMBER_OF_KEYS = 128;
     double mSampleOffsetBuffer[MAX_NUMBER_OF_KEYS];
 
+    double mSampleRate;
     int mBlockSize;
 
     UnboundMIDIBuffer mUnboundMIDIBuffer;
@@ -44,9 +49,10 @@ private:
 
     void pushMessageFromBuffer (TaggedMIDIMessage& inputMessage);
 
-    double mTimingStandardDeviationInSamples;
+
+    std::vector<float> mVelocityStandardDeviation;
+
     double mMaximumDelayTimeInSamples;
-    double mVelocityStandardDeviation;
 
 };
 

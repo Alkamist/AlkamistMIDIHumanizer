@@ -16,7 +16,7 @@ public:
     inline double getCurrentValue() const { return mCurrentValue; };
 
     // Setters
-    void setValue (double newValue);
+    void setTargetValue (double newValue);
 
 private:
 

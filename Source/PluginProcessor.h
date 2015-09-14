@@ -53,21 +53,17 @@ public:
 
     //==============================================================================
 
-    void parameterChange (FloatParameter* parameterThatWasChanged);
-
-    //==============================================================================
-
+    void midiHumanizerCallback();
     void reset();
-    inline void signalForParameterChange() { mParameterChangeFlag = true; };
 
     FloatParameter* timingStandardDeviation;
     FloatParameter* velocityStandardDeviation;
 
 private:
 
-    void handleParameterChanges();
+    void bufferParameters();
+    void sendParameterBuffers();
     void clearParameterChanges();
-    bool mParameterChangeFlag;
 
     MIDIHumanizer mMIDIHumanizer;
 

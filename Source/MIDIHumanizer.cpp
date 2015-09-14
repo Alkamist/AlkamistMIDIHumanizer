@@ -31,13 +31,13 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
             {
                 if (currentMidiMessage.isNoteOn())
                 {                 
-                    double randomOffset = generateNormalRandomNumber(mMersenneTwisterTiming) * mTimingStandardDeviationInSamples;
+                    double randomOffset = generateNormalRandomNumber(mMersenneTwisterTiming) * mTimingStandardDeviationInSamples[sampleIndex];
                     double newSampleOffset = randomOffset + mMaximumDelayTimeInSamples;
 
                     mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = newSampleOffset;
 
                     double newVelocity = currentMidiMessage.getFloatVelocity() 
-                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation / 127.0;
+                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;
 
                     if (newVelocity > 1.0)
                     {
@@ -56,7 +56,7 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
                 if (currentMidiMessage.isNoteOff())
                 {
                     double newVelocity = currentMidiMessage.getFloatVelocity() 
-                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation / 127.0;
+                                       + generateNormalRandomNumber(mMersenneTwisterVelocity) * mVelocityStandardDeviation[sampleIndex] / 127.0;
 
                     if (newVelocity > 1.0)
                     {
@@ -86,8 +86,6 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
 
                 midiBufferIsNotEmpty = inputMIDIBufferIterator.getNextEvent (currentMidiMessage, midiMessageSamplePosition);
             }
-
-            //parameterChangeSignal();
         }
     }
 
@@ -182,3 +180,26 @@ void MIDIHumanizer::pushMessageFromBuffer (TaggedMIDIMessage& inputMessage)
         }
     }
 }
+
+void MIDIHumanizer::setTimingStandardDeviation (std::vector<float> inputVector)   
+{ 
+    std::vector<float> bufferInSamples (inputVector);
+
+    for (int index = 0; index < inputVector.size(); ++index)
+    {
+        float currentValue = inputVector[index];
+        float valueInSamples = float (mSampleRate * currentValue / 1000.0);
+        bufferInSamples[index] = valueInSamples;
+    }
+
+    mTimingStandardDeviationInSamples = bufferInSamples; 
+};
+
+void MIDIHumanizer::reset (double inputSampleRate, int inputBlockSize) 
+{ 
+    mSampleRate = inputSampleRate;
+    mBlockSize = inputBlockSize; 
+
+    mTimingStandardDeviationInSamples.resize (mBlockSize);
+    mVelocityStandardDeviation.resize (mBlockSize);
+};

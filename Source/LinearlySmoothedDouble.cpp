@@ -16,7 +16,7 @@ void LinearlySmoothedDouble::reset (double sampleRate, double fadeLengthSeconds)
     mCountdown = 0;
 }
 
-void LinearlySmoothedDouble::setValue (double inputValue)
+void LinearlySmoothedDouble::setTargetValue (double inputValue)
 {
     if (mTarget != inputValue)
     {
@@ -41,5 +41,4 @@ void LinearlySmoothedDouble::processPerSample()
         --mCountdown;
         mCurrentValue += mStep;
     }
-
 }
