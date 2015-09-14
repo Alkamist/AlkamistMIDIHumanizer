@@ -80,6 +80,16 @@ void FloatParameter::bufferParameter()
             mParameterBuffer[index] = ((float) mLinearlySmoothedDouble.getCurrentValue());
         }
     }
+
+    if (mParameterWasReset)
+    {
+        for (int index = 0; index < mBlockSize; ++index)
+        {
+            mParameterBuffer[index] = mUnSmoothedParameterValue;
+        }
+
+        mParameterWasReset = false;
+    }
 }
 
 void FloatParameter::reset (double inputSampleRate, int inputBlockSize)
@@ -92,6 +102,8 @@ void FloatParameter::reset (double inputSampleRate, int inputBlockSize)
     // Linear Parameter Ramp
     double smoothingTimeInSeconds = ((double) mBlockSize) / mSampleRate;
     mLinearlySmoothedDouble.reset (mSampleRate, smoothingTimeInSeconds);
+
+    mParameterWasReset = true;
 }
 
 // Overridden Functions:

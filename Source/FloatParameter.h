@@ -53,6 +53,7 @@ private:
     double mSampleRate;
     int mBlockSize;
     bool mParameterChangedThisBlock;
+    bool mParameterWasReset;
 
     LinearlySmoothedDouble mLinearlySmoothedDouble;
     NormalisableRange<float> mNormalizableRange;
