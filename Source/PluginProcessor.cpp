@@ -11,7 +11,7 @@ AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
     int samplesPerBlock = getBlockSize();
 
     addParameter (timingStandardDeviation  = new FloatParameter (0.0f, 0.0f, 15.0f, "Timing Standard Deviation", "ms", sampleRate, samplesPerBlock));
-    addParameter (velocityStandardDeviation  = new FloatParameter (0.0f, 0.0f, 64.0f, "Velocity Standard Deviation", "", sampleRate, samplesPerBlock));
+    addParameter (velocityStandardDeviation  = new FloatParameter (0.0f, 0.0f, 32.0f, "Velocity Standard Deviation", "", sampleRate, samplesPerBlock));
 
     reset();
 
@@ -131,10 +131,10 @@ void AlkamistMIDIHumanizerAudioProcessor::getStateInformation (MemoryBlock& dest
 
     // Document our parameter values in XML child elements.
     xmlPointer = xmlRoot.createNewChildElement ("timingStandardDeviation");
-    xmlPointer->addTextElement (String (timingStandardDeviation->getValue()));
+    xmlPointer->addTextElement (String (timingStandardDeviation->getUnNormalizedUnSmoothedValue()));
 
     xmlPointer = xmlRoot.createNewChildElement ("velocityStandardDeviation");
-    xmlPointer->addTextElement (String (velocityStandardDeviation->getValue()));
+    xmlPointer->addTextElement (String (velocityStandardDeviation->getUnNormalizedUnSmoothedValue()));
 
     // Use this helper function to stuff it into the binary blob and return it.
     copyXmlToBinary (xmlRoot, destData);
@@ -154,13 +154,13 @@ void AlkamistMIDIHumanizerAudioProcessor::setStateInformation (const void* data,
             if(xmlChildPointer->hasTagName("timingStandardDeviation"))
             {
                 String text = xmlChildPointer->getAllSubText();
-                timingStandardDeviation->setValue (text.getFloatValue());
+                timingStandardDeviation->setNormalizedValue (text.getFloatValue());
             }
 
             if(xmlChildPointer->hasTagName("velocityStandardDeviation"))
             {
                 String text = xmlChildPointer->getAllSubText();
-                velocityStandardDeviation->setValue (text.getFloatValue());
+                velocityStandardDeviation->setNormalizedValue (text.getFloatValue());
             }
         }
     }

@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "FloatParameter.h"
 
 FloatParameter::FloatParameter (float defaultParameterValue,
@@ -50,6 +52,8 @@ std::vector<float> FloatParameter::getNormalizedSmoothedBuffer()
 void FloatParameter::setNormalizedValue (float nonNormalizedValue)
 {
     float newValue = mNormalizableRange.convertTo0to1 (nonNormalizedValue);
+    newValue = std::min (newValue, 1.0f);
+    newValue = std::max (newValue, 0.0f);
     setValueNotifyingHost (newValue);
 }
 
