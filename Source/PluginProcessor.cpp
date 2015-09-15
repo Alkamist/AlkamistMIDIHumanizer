@@ -130,10 +130,10 @@ void AlkamistMIDIHumanizerAudioProcessor::getStateInformation (MemoryBlock& dest
     XmlElement* xmlPointer;
 
     // Document our parameter values in XML child elements.
-    xmlPointer = xmlRoot.createNewChildElement ("timingStandardDeviation");
+    xmlPointer = xmlRoot.createNewChildElement ("timingRange");
     xmlPointer->addTextElement (String (timingRange->getUnNormalizedUnSmoothedValue()));
 
-    xmlPointer = xmlRoot.createNewChildElement ("velocityStandardDeviation");
+    xmlPointer = xmlRoot.createNewChildElement ("velocityRange");
     xmlPointer->addTextElement (String (velocityRange->getUnNormalizedUnSmoothedValue()));
 
     // Use this helper function to stuff it into the binary blob and return it.
@@ -151,13 +151,13 @@ void AlkamistMIDIHumanizerAudioProcessor::setStateInformation (const void* data,
     {
         forEachXmlChildElement (*xmlPluginState, xmlChildPointer)
         {
-            if(xmlChildPointer->hasTagName("timingStandardDeviation"))
+            if(xmlChildPointer->hasTagName("timingRange"))
             {
                 String text = xmlChildPointer->getAllSubText();
                 timingRange->setNormalizedValue (text.getFloatValue());
             }
 
-            if(xmlChildPointer->hasTagName("velocityStandardDeviation"))
+            if(xmlChildPointer->hasTagName("velocityRange"))
             {
                 String text = xmlChildPointer->getAllSubText();
                 velocityRange->setNormalizedValue (text.getFloatValue());
