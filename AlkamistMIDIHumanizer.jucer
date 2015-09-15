@@ -52,10 +52,10 @@
         <CONFIGURATION name="Debug" winWarningLevel="2" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="AlkamistMIDIHumanizer"
                        postbuildCommand="copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst&quot;&#10;copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;C:\VSTPluginsDebug\$(TargetFileName)&quot;"
-                       libraryPath="" headerPath="F:\Programming Documents\boost_1_59_0"/>
+                       libraryPath="" headerPath=""/>
         <CONFIGURATION name="Release" winWarningLevel="2" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="AlkamistMIDIHumanizer"
-                       libraryPath="" headerPath="F:\Programming Documents\boost_1_59_0"/>
+                       libraryPath="" headerPath=""/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../Programming Documents/JUCE-master/modules"/>

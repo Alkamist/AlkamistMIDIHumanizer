@@ -2,8 +2,6 @@
 #define MIDIHUMANIZER_H_INCLUDED
 
 #include <vector>
-#include <boost/random.hpp>
-#include <boost/random/uniform_01.hpp>
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "CompleteMIDINote.h"
@@ -41,9 +39,8 @@ private:
     MidiBuffer mOtherMIDIEvents;
     std::vector<TaggedMIDIMessage> mOtherMIDIExtendedBuffer;
 
-    boost::mt19937 mMersenneTwisterTiming;
-    boost::mt19937 mMersenneTwisterVelocity;
-    double generateUniformRandomNumber (boost::mt19937& inputRNG);
+    Random mRandomTiming;
+    Random mRandomVelocity;
 
     void pushMessageFromBuffer (TaggedMIDIMessage& inputMessage);
 

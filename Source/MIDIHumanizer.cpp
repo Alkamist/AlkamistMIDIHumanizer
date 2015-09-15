@@ -1,15 +1,18 @@
-#include <ctime>
-
 #include "MIDIHumanizer.h"
 
 MIDIHumanizer::MIDIHumanizer()
 {
-    mMersenneTwisterTiming.seed ((unsigned int) std::time (0));
-    mMersenneTwisterVelocity.seed (unsigned int (std::time (0)) + 4826);
+    mRandomTiming.setSeedRandomly();
+    mRandomVelocity.setSeedRandomly();
 }
 
 MIDIHumanizer::~MIDIHumanizer()
 {}
+
+double generateRandomDouble (Random& inputRNG)
+{
+    return 2.0 * inputRNG.nextDouble() - 1.0;
+}
 
 void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
 {
@@ -31,13 +34,13 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
             {
                 if (currentMidiMessage.isNoteOn())
                 {                 
-                    double randomOffset = generateUniformRandomNumber(mMersenneTwisterTiming) * mTimingRangeInSamples[sampleIndex];
+                    double randomOffset = generateRandomDouble (mRandomTiming) * mTimingRangeInSamples[sampleIndex];
                     double newSampleOffset = randomOffset + mMaximumDelayTimeInSamples;
 
                     mSampleOffsetBuffer[currentMidiMessage.getNoteNumber()] = newSampleOffset;
 
                     double newVelocity = currentMidiMessage.getFloatVelocity() 
-                                       + generateUniformRandomNumber(mMersenneTwisterVelocity) * mVelocityRange[sampleIndex] / 127.0;
+                                       + generateRandomDouble (mRandomVelocity)  * mVelocityRange[sampleIndex] / 127.0;
 
                     if (newVelocity > 1.0)
                     {
@@ -61,7 +64,7 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
                 if (currentMidiMessage.isNoteOff())
                 {
                     double newVelocity = currentMidiMessage.getFloatVelocity() 
-                                       + generateUniformRandomNumber(mMersenneTwisterVelocity) * mVelocityRange[sampleIndex] / 127.0;
+                                       + generateRandomDouble (mRandomVelocity)  * mVelocityRange[sampleIndex] / 127.0;
 
                     if (newVelocity > 1.0)
                     {
@@ -159,15 +162,6 @@ void MIDIHumanizer::processMIDIBuffer (MidiBuffer& inputMIDIBuffer)
     mHumanizedMIDIBuffer.clear();
 
     mOtherMIDIEvents.clear();
-}
-
-// Generates a uniformly distributed random number with a
-// mean of 0.0 and a range of -1 to 1.
-double MIDIHumanizer::generateUniformRandomNumber (boost::mt19937& inputRNG)
-{ 
-    boost::uniform_01<> uniformDistribution;
-
-    return (double) 2.0 * uniformDistribution (inputRNG) - 1.0;
 }
 
 void MIDIHumanizer::pushMessageFromBuffer (TaggedMIDIMessage& inputMessage)
