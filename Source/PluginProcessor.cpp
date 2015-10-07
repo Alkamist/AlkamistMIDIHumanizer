@@ -8,12 +8,12 @@ const int PDC_DELAY_TIME = 1024;
 AlkamistMIDIHumanizerAudioProcessor::AlkamistMIDIHumanizerAudioProcessor()
 {
     double sampleRate = getSampleRate();
-    int samplesPerBlock = getBlockSize();
+    int blockSize = getBlockSize();
 
-    addParameter (timingRange  = new FloatParameter (0.0f, 0.0f, 20.0f, "Timing Range", "ms", sampleRate, samplesPerBlock));
-    addParameter (velocityRange  = new FloatParameter (0.0f, 0.0f, 64.0f, "Velocity Range", "", sampleRate, samplesPerBlock));
+    addParameter (timingRange  = new FloatParameter (0.0f, 0.0f, 20.0f, "Timing Range", "ms", sampleRate, blockSize));
+    addParameter (velocityRange  = new FloatParameter (0.0f, 0.0f, 64.0f, "Velocity Range", "", sampleRate, blockSize));
 
-    reset();
+    reset (sampleRate, blockSize);
 
     mMIDIHumanizer.setMaximumDelayTime (PDC_DELAY_TIME);
 
@@ -74,12 +74,12 @@ double AlkamistMIDIHumanizerAudioProcessor::getTailLengthSeconds() const
 }
 
 //==============================================================================
-void AlkamistMIDIHumanizerAudioProcessor::prepareToPlay (double /*sampleRate*/, int /*samplesPerBlock*/)
+void AlkamistMIDIHumanizerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 
-    reset();
+    reset (sampleRate, samplesPerBlock);
 }
 
 void AlkamistMIDIHumanizerAudioProcessor::releaseResources()
@@ -94,17 +94,6 @@ void AlkamistMIDIHumanizerAudioProcessor::processBlock (AudioSampleBuffer& buffe
     sendParameterBuffers();
 
     mMIDIHumanizer.processMIDIBuffer (midiMessages);
-
-    /*for (int channel = 0; channel < getNumInputChannels(); ++channel)
-    {
-        float* channelData = buffer.getWritePointer (channel);
-
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-        {
-            float temporaryGain = (mMIDIHumanizer.mTimingStandardDeviationInSamples[sample] * 1000.0 / getSampleRate()) / 15.0;
-            channelData[sample] = temporaryGain;
-        }
-    }*/
 
     clearParameterChanges();
 
@@ -176,24 +165,14 @@ void AlkamistMIDIHumanizerAudioProcessor::bufferParameters()
 
 void AlkamistMIDIHumanizerAudioProcessor::sendParameterBuffers()
 {
-    if (timingRange->parameterChangedThisBlock())
-    {
-        mMIDIHumanizer.setTimingRange (timingRange->getUnNormalizedSmoothedBuffer());
-
-        timingRange->setFlagForSendingFlatBuffer (true);
-    }
-    if (timingRange->parameterNeedsToSendFlatBuffer())
+    if (timingRange->parameterChangedThisBlock()
+        || timingRange->parameterNeedsToSendFlatBuffer())
     {
         mMIDIHumanizer.setTimingRange (timingRange->getUnNormalizedSmoothedBuffer());
     }
 
-    if (velocityRange->parameterChangedThisBlock())
-    {
-        mMIDIHumanizer.setVelocityRange (velocityRange->getUnNormalizedSmoothedBuffer());
-
-        velocityRange->setFlagForSendingFlatBuffer (true);
-    }
-    if (velocityRange->parameterNeedsToSendFlatBuffer())
+    if (velocityRange->parameterChangedThisBlock()
+        || velocityRange->parameterNeedsToSendFlatBuffer())
     {
         mMIDIHumanizer.setVelocityRange (velocityRange->getUnNormalizedSmoothedBuffer());
     }
@@ -205,16 +184,16 @@ void AlkamistMIDIHumanizerAudioProcessor::clearParameterChanges()
     velocityRange->clearParameterChange();
 }
 
-void AlkamistMIDIHumanizerAudioProcessor::reset()
+void AlkamistMIDIHumanizerAudioProcessor::reset (double inputSampleRate, int inputBlockSize)
 {
-    double sampleRate = getSampleRate();
-    int samplesPerBlock = getBlockSize();
-
-    mMIDIHumanizer.reset (sampleRate, samplesPerBlock);
+    mMIDIHumanizer.reset (inputSampleRate, inputBlockSize);
 
     // Parameters
-    timingRange->reset (sampleRate, samplesPerBlock);
-    velocityRange->reset (sampleRate, samplesPerBlock);
+    timingRange->reset (inputSampleRate, inputBlockSize);
+    velocityRange->reset (inputSampleRate, inputBlockSize);
+
+    timingRange->signalForParameterChange();
+    velocityRange->signalForParameterChange();
 }
 //==============================================================================
 // This creates new instances of the plugin..

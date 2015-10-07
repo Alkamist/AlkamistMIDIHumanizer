@@ -61,12 +61,19 @@ void FloatParameter::setNormalizedValue (float nonNormalizedValue)
 
 void FloatParameter::clearParameterChange()                                      
 { 
+    if (mParameterNeedsToSendFlatBuffer)
+    {
+        mParameterNeedsToSendFlatBuffer = false;
+    }
+
     if (mParameterChangedThisBlock)
     {
         for (int index = 0; index < mBlockSize; ++index)
         {
             mParameterBuffer[index] = mUnSmoothedParameterValue;
         }
+
+        mParameterNeedsToSendFlatBuffer = true;
     }
 
     mParameterChangedThisBlock = false; 
